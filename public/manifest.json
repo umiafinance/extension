@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "Umia",
+  "version": "0.4.0",
+  "description": "Generate privacy-preserving zkTLS proofs to verify eligibility for Umia Tailored Auctions.",
+  "homepage_url": "https://umia.finance",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "background": {
+    "service_worker": "extensionBackground.js",
+    "type": "module"
+  },
+  "permissions": ["offscreen", "cookies", "scripting", "storage"],
+  "optional_host_permissions": ["http://localhost/*", "https://*/*"],
+  "externally_connectable": {
+    "matches": []
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'; worker-src 'self';"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["reclaim-browser-extension-sdk/interceptor/network-interceptor.bundle.js"],
+      "matches": ["http://localhost/*", "https://*/*"]
+    },
+    {
+      "resources": ["reclaim-browser-extension-sdk/interceptor/injection-scripts.bundle.js"],
+      "matches": ["http://localhost/*", "https://*/*"]
+    },
+    {
+      "resources": [
+        "reclaim-browser-extension-sdk/content/components/reclaim-provider-verification-popup.css",
+        "reclaim-browser-extension-sdk/content/components/reclaim-provider-verification-popup.html"
+      ],
+      "matches": ["http://localhost/*", "https://*/*"]
+    }
+  ]
+}

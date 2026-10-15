@@ -1,0 +1,6 @@
+{
+  "_doc": "Public key of the Chrome Web Store item (Developer Dashboard > Package > View public key) and the extension ID it yields. Public by design: every `just extension` build writes it to dist/manifest.json as `key`, so Load unpacked runs as the store ID. The build refuses this file if the key no longer yields `id`.",
+  "storeUrl": "https://chromewebstore.google.com/detail/umia/ejcaahfcaaiblipldkfijdcbannidbdd",
+  "id": "ejcaahfcaaiblipldkfijdcbannidbdd",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4cST76hWOaHMw+2+FFOwVsw+o3QPOueAB1q2D/YsCDARMg5zHfljGELJqPNEQUBl7o2B80gDY/lI/0DuUAWYWE1zAm8vBIEHUoorGwAYq2QlDHUvg1R5JAnqQQbqVdTTe8/Rd2fG0xr3Gtqj6VQIr62A8KZ1AjjMT+1xGu2DbdtnIRBH9hTXvXozt46KXx7ugKd+M02N5Ot6XYmittcGJQtX621JimXTZDpErgUgaTceeCdFM2YxRFurMV53ELmsqh1Di2nRl2tMsxpd0MU4ivB2qQ665sBfkZvz3qnhSGIt/sT6PQtUNgxI1JPmEhUwfPgXauOwn0CjfG/ft5ADYwIDAQAB"
+}

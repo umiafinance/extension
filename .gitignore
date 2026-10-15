@@ -1,0 +1,10 @@
+dist/
+public/browser-rpc/
+public/licenses/
+public/reclaim-browser-extension-sdk/
+public/343.bundle.js
+public/*.bundle.js
+.staged-assets.json
+
+extension-dist.zip
+.ui-preview/

@@ -1,0 +1,179 @@
+/* Values come only from @umia/design tokens; theme/page.css defines the ones used here. */
+:root {
+  color-scheme: light dark;
+}
+
+:root:not([data-umia-theme-ready]) {
+  visibility: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-5);
+  background: var(--color-surface-default);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-14);
+  line-height: var(--line-height-relaxed);
+  -webkit-font-smoothing: antialiased;
+}
+
+main {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  margin: 0;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-15);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.brand svg {
+  width: 22px;
+  height: 22px;
+  color: var(--color-brand-primary);
+}
+
+h1 {
+  margin: 0;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-snug);
+  letter-spacing: var(--letter-spacing-tight);
+  text-wrap: balance;
+}
+
+.site {
+  font-weight: var(--font-weight-semibold);
+  word-break: break-all;
+}
+
+.note {
+  display: flex;
+  gap: var(--spacing-3);
+  margin: 0;
+  padding: var(--spacing-3) var(--spacing-4);
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--color-accent-blue-default) 7%, transparent);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-13);
+  line-height: var(--line-height-normal);
+}
+
+.note svg {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin-top: 1px;
+  color: var(--color-feedback-info-icon);
+}
+
+.note p {
+  margin: 0;
+}
+
+.note p + p {
+  margin-top: var(--spacing-2);
+}
+
+#status,
+#progress {
+  margin: 0;
+  padding: var(--spacing-2) var(--spacing-3);
+  border: 1px solid;
+  border-radius: var(--radius-xl);
+  font-size: var(--font-size-13);
+  line-height: var(--line-height-normal);
+}
+
+#status {
+  border-color: var(--color-feedback-danger-border);
+  background: var(--color-feedback-danger-bg);
+  color: var(--color-feedback-danger-text);
+}
+
+#progress {
+  border-color: var(--color-feedback-success-border);
+  background: var(--color-feedback-success-bg);
+  color: var(--color-feedback-success-text);
+}
+
+.actions {
+  display: flex;
+  gap: var(--spacing-2);
+}
+
+button {
+  flex: 1;
+  height: 40px;
+  padding: 0 var(--spacing-4);
+  appearance: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  font: inherit;
+  font-size: var(--font-size-15);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition:
+    opacity 150ms ease,
+    background-color 150ms ease,
+    transform 150ms ease;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+#grant {
+  background: var(--color-text-primary);
+  color: var(--color-surface-default);
+}
+
+#grant:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+#deny {
+  border-color: var(--color-action-secondary-border);
+  background: var(--color-action-secondary-bg);
+  color: var(--color-action-secondary-text);
+}
+
+#deny:hover:not(:disabled) {
+  border-color: var(--color-action-secondary-border-hover);
+  background: var(--color-action-secondary-bg-hover);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button {
+    transition: none;
+  }
+}

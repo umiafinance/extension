@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Umia — grant site access</title>
+    <link rel="stylesheet" href="theme/page.css" />
+    <link rel="stylesheet" href="grant.css" />
+  </head>
+  <body>
+    <main>
+      <p class="brand">
+        <svg viewBox="0 0 38.3748 38.3748" aria-hidden="true">
+          <path
+            fill="currentColor"
+            d="M15.2578 1.62793C17.4283 -0.542382 20.9467 -0.542384 23.1172 1.62793C23.6593 2.17 24.0666 2.79658 24.3379 3.46484C25.3477 5.95294 25.5251 9.05247 27.4238 10.9512C29.3226 12.8498 32.4221 13.0273 34.9102 14.0371C35.5784 14.3084 36.205 14.7157 36.7471 15.2578C38.9174 17.4283 38.9174 20.9467 36.7471 23.1172C36.205 23.6593 35.5785 24.0666 34.9102 24.3379C32.4221 25.3477 29.3225 25.5251 27.4238 27.4238C25.5251 29.3225 25.3477 32.4221 24.3379 34.9102C24.0666 35.5785 23.6593 36.205 23.1172 36.7471C20.9467 38.9174 17.4283 38.9174 15.2578 36.7471C14.7157 36.205 14.3084 35.5784 14.0371 34.9102C13.0273 32.4221 12.8498 29.3226 10.9512 27.4238C9.05247 25.5251 5.95294 25.3477 3.46484 24.3379C2.79658 24.0666 2.17 23.6593 1.62793 23.1172C-0.542384 20.9467 -0.542382 17.4283 1.62793 15.2578C2.17003 14.7157 2.79653 14.3084 3.46484 14.0371C5.95294 13.0273 9.05246 12.8499 10.9512 10.9512C12.8499 9.05246 13.0273 5.95294 14.0371 3.46484C14.3084 2.79653 14.7157 2.17003 15.2578 1.62793ZM14.5166 12.3877C12.9493 12.3878 11.6787 13.6582 11.6787 15.2256V18.5039C11.6787 18.9133 12.0105 19.246 12.4199 19.2461H16.6133C17.0228 19.2461 17.3545 18.9134 17.3545 18.5039V15.2256C17.3545 13.6582 16.084 12.3877 14.5166 12.3877ZM24.0361 12.3877C22.5014 12.3877 21.2569 13.6313 21.2568 15.166V18.5039C21.2568 18.9134 21.5895 19.2461 21.999 19.2461H26.0732C26.4827 19.2461 26.8154 18.9134 26.8154 18.5039V15.166C26.8154 13.6313 25.5708 12.3877 24.0361 12.3877Z"
+          />
+        </svg>
+        Umia
+      </p>
+      <h1>Allow verification on <span class="site" data-site>this site</span>?</h1>
+      <p id="status" hidden>Missing site information. Please retry from Umia.</p>
+      <div class="note">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+          <path d="M12 16v-4M12 8h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        <div>
+          <p>
+            Umia needs one-time access to <span class="site" data-site>this site</span> to generate
+            your zkTLS eligibility proof in your own browser session.
+          </p>
+          <p>Access is used only while this verification runs. You can revoke it anytime.</p>
+        </div>
+      </div>
+      <p id="progress" hidden>Access granted — continuing the verification…</p>
+      <div class="actions">
+        <button id="deny" type="button">Not now</button>
+        <button id="grant" type="button">Grant access</button>
+      </div>
+    </main>
+    <script src="grant-theme.js"></script>
+    <script src="grant.js"></script>
+  </body>
+</html>

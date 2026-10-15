@@ -1,0 +1,344 @@
+/* Patches over the vendored SDK popup, which every build regenerates from node_modules.
+   scripts/setup.js asserts the internals these rules target still exist. They restyle it in
+   the Hub's look from @umia/design tokens only; theme/overlay.css defines the ones used here.
+   The `#reclaim-protocol-popup` prefix outranks the SDK's class selectors, and `!important`
+   is reserved for properties the SDK sets inline from JS. */
+
+#reclaim-protocol-popup {
+  background: var(--color-surface-default);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-2xl);
+  box-shadow:
+    0 1px 2px color-mix(in srgb, var(--color-overlay-default) 20%, transparent),
+    0 16px 40px -16px var(--color-overlay-default);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-13);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing-normal);
+  text-align: left;
+  -webkit-font-smoothing: antialiased;
+}
+
+#reclaim-protocol-popup::before {
+  display: none;
+}
+
+#reclaim-protocol-popup.dragging {
+  box-shadow:
+    0 1px 2px color-mix(in srgb, var(--color-overlay-default) 20%, transparent),
+    0 24px 56px -16px var(--color-overlay-strong);
+}
+
+#reclaim-protocol-popup .reclaim-popup-header {
+  gap: var(--spacing-2);
+  padding: var(--spacing-3) var(--spacing-4);
+  background: none;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+#reclaim-protocol-popup .reclaim-popup-header:hover {
+  background: var(--color-surface-hover);
+}
+
+#reclaim-protocol-popup .reclaim-popup-brand {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+#reclaim-protocol-popup .reclaim-popup-mark {
+  color: var(--color-brand-primary);
+}
+
+#reclaim-protocol-popup .reclaim-drag-handle {
+  background-image: radial-gradient(
+    circle at center,
+    var(--color-icon-tertiary) 1px,
+    transparent 1.3px
+  );
+}
+
+#reclaim-protocol-popup .reclaim-popup-header:hover .reclaim-drag-handle,
+#reclaim-protocol-popup.dragging .reclaim-drag-handle {
+  background-image: radial-gradient(
+    circle at center,
+    var(--color-icon-primary) 1px,
+    transparent 1.3px
+  );
+}
+
+#reclaim-protocol-popup .reclaim-popup-content {
+  gap: var(--spacing-3);
+  padding: var(--spacing-4);
+  /* The proof-wait notice overflows the SDK's content cap; a flat value would outspecify
+     their small-screen media query and clip the status block, so keep their budget. */
+  max-height: min(480px, calc(90vh - 80px));
+}
+
+#reclaim-protocol-popup .reclaim-session-section {
+  margin-bottom: 0;
+  padding: var(--spacing-2) var(--spacing-2) var(--spacing-2) var(--spacing-3);
+  background: var(--color-background-subtle);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+}
+
+#reclaim-protocol-popup .reclaim-info-label {
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-10);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+#reclaim-protocol-popup .reclaim-info-value {
+  color: var(--color-text-primary);
+}
+
+#reclaim-protocol-popup .reclaim-info-value:hover {
+  color: var(--color-text-link);
+}
+
+#reclaim-protocol-popup .reclaim-session-content .reclaim-info-value {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+}
+
+#reclaim-protocol-popup .reclaim-copy-icon {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--color-action-secondary-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-action-secondary-bg);
+  color: var(--color-icon-secondary);
+}
+
+#reclaim-protocol-popup .reclaim-copy-icon:hover {
+  border-color: var(--color-action-secondary-border-hover);
+  background: var(--color-action-secondary-bg-hover);
+  color: var(--color-icon-primary);
+  transform: none;
+}
+
+#reclaim-protocol-popup .reclaim-copy-icon:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+/* The SDK fills the outline icon, which renders it as a solid block. */
+#reclaim-protocol-popup .reclaim-copy-icon svg,
+#reclaim-protocol-popup .reclaim-copy-icon:hover svg {
+  fill: none;
+}
+
+#reclaim-protocol-popup .reclaim-copy-feedback {
+  border-radius: var(--radius-md);
+  background: var(--color-text-primary) !important;
+  color: var(--color-surface-default) !important;
+  box-shadow: none;
+  font-size: var(--font-size-11);
+}
+
+#reclaim-protocol-popup .reclaim-steps-container,
+#reclaim-protocol-popup .reclaim-status-container {
+  margin-top: 0;
+  padding: var(--spacing-3);
+  background: none;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+}
+
+#reclaim-protocol-popup .reclaim-steps-header {
+  margin-bottom: var(--spacing-3);
+}
+
+#reclaim-protocol-popup .reclaim-steps-icon {
+  display: none;
+}
+
+#reclaim-protocol-popup .reclaim-steps-title,
+#reclaim-protocol-popup .reclaim-status-text {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-13);
+  font-weight: var(--font-weight-semibold);
+}
+
+#reclaim-protocol-popup .reclaim-steps-list {
+  gap: var(--spacing-2);
+}
+
+#reclaim-protocol-popup .reclaim-step,
+#reclaim-protocol-popup .reclaim-step:hover {
+  padding: 0;
+  background: none;
+  border: 0;
+}
+
+/* The Hub's step-tracker look: a solid ring on the first step, dashed rings after it. The
+   SDK never advances the steps, so this marks no progress. */
+#reclaim-protocol-popup .reclaim-step-number {
+  width: 22px;
+  height: 22px;
+  margin-right: var(--spacing-2);
+  background: none;
+  border: 1px dashed var(--color-border-strong);
+  box-shadow: none;
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-11);
+  font-variant-numeric: tabular-nums;
+}
+
+#reclaim-protocol-popup .reclaim-step:first-child .reclaim-step-number {
+  border: 1.5px solid var(--color-text-primary);
+  color: var(--color-text-primary);
+}
+
+#reclaim-protocol-popup .reclaim-step-text {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-13);
+  font-weight: var(--font-weight-regular);
+}
+
+#reclaim-protocol-popup .reclaim-step:first-child .reclaim-step-text {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+/* The SDK shows this spinner for exactly the claim + proof wait, hiding it on both
+   success and failure, so the notice needs no other cue to scope it to that window. */
+#reclaim-protocol-popup #reclaim-circular-loader {
+  flex-direction: column;
+  gap: var(--spacing-3);
+  margin: 0 0 var(--spacing-3);
+}
+
+#reclaim-protocol-popup #reclaim-circular-loader::before {
+  content: "Proof generation takes about a minute, sometimes longer. Keep this tab open.";
+  max-width: 240px;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-12);
+  line-height: var(--line-height-normal);
+  text-align: center;
+}
+
+#reclaim-protocol-popup #reclaim-circular-loader svg {
+  width: 28px;
+  height: 28px;
+}
+
+#reclaim-protocol-popup #reclaim-circular-loader circle {
+  stroke: var(--color-text-primary);
+}
+
+#reclaim-protocol-popup .reclaim-progress-counter {
+  padding: 1px var(--spacing-2);
+  border-radius: var(--radius-full);
+  background: var(--color-background-muted);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-11);
+  font-variant-numeric: tabular-nums;
+}
+
+#reclaim-protocol-popup .reclaim-progress-counter:empty {
+  display: none;
+}
+
+#reclaim-protocol-popup .reclaim-progress-bar-container {
+  border-radius: var(--radius-full);
+  background: var(--color-background-muted);
+}
+
+#reclaim-protocol-popup .reclaim-progress-bar-container::before {
+  display: none;
+}
+
+/* The SDK scales the bar with transform but leaves its width at 0% until success, so the
+   claim count never showed. */
+#reclaim-protocol-popup .reclaim-progress-bar {
+  width: 100%;
+  border-radius: var(--radius-full);
+  background: var(--color-text-primary);
+}
+
+#reclaim-protocol-popup .reclaim-progress-bar::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--color-surface-default) 40%, transparent),
+    transparent
+  );
+}
+
+#reclaim-protocol-popup .reclaim-progress-bar.success {
+  background: var(--color-brand-primary);
+}
+
+#reclaim-protocol-popup .reclaim-progress-bar.error {
+  background: var(--color-feedback-danger-icon);
+}
+
+#reclaim-protocol-popup .reclaim-progress-bar.success::after,
+#reclaim-protocol-popup .reclaim-progress-bar.error::after {
+  display: none;
+}
+
+#reclaim-protocol-popup .reclaim-status-message {
+  margin-top: var(--spacing-2);
+  color: var(--color-text-secondary) !important;
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-normal);
+}
+
+#reclaim-protocol-popup
+  .reclaim-status-container:has(.reclaim-progress-bar.error)
+  .reclaim-status-message {
+  color: var(--color-text-danger) !important;
+}
+
+#reclaim-protocol-popup .reclaim-status-icon {
+  margin: 0 0 var(--spacing-3);
+}
+
+#reclaim-protocol-popup .reclaim-icon-circle {
+  width: 36px;
+  height: 36px;
+  background: var(--color-feedback-success-bg);
+  box-shadow: none;
+  animation: none;
+}
+
+#reclaim-protocol-popup .reclaim-icon-circle path {
+  stroke: var(--color-feedback-success-icon);
+}
+
+#reclaim-protocol-popup .reclaim-icon-circle.error {
+  background: var(--color-feedback-danger-bg);
+}
+
+#reclaim-protocol-popup .reclaim-icon-circle.error path {
+  stroke: var(--color-feedback-danger-icon);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #reclaim-protocol-popup,
+  #reclaim-protocol-popup *,
+  #reclaim-protocol-popup *::before,
+  #reclaim-protocol-popup *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  #reclaim-protocol-popup .reclaim-success-checkmark {
+    stroke-dashoffset: 0;
+  }
+}

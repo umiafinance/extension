@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "upstreams": {
+    "zk-symmetric-crypto": {
+      "repository": "https://github.com/reclaimprotocol/zk-symmetric-crypto",
+      "commit": "11ab427ab8382227f1b18b2a9caa876253c38784",
+      "rawBaseUrl": "https://raw.githubusercontent.com/reclaimprotocol/zk-symmetric-crypto/11ab427ab8382227f1b18b2a9caa876253c38784/"
+    },
+    "license": {
+      "repository": "https://github.com/reclaimprotocol/.github",
+      "commit": "49cd1902963723716901d80212502842ea0107eb",
+      "rawBaseUrl": "https://raw.githubusercontent.com/reclaimprotocol/.github/49cd1902963723716901d80212502842ea0107eb/"
+    }
+  },
+  "objects": [
+    {
+      "upstream": "zk-symmetric-crypto",
+      "path": "resources/snarkjs/aes-128-ctr/circuit.wasm",
+      "key": "zk-symmetric-crypto/11ab427ab8382227f1b18b2a9caa876253c38784/resources/snarkjs/aes-128-ctr/circuit.wasm",
+      "size": 410409,
+      "sha256": "2a54c047fc56b45cea8f6f6c114d9bccb4db86574b634d0415fcef311c87ddaf",
+      "contentType": "application/wasm"
+    },
+    {
+      "upstream": "zk-symmetric-crypto",
+      "path": "resources/snarkjs/aes-128-ctr/circuit_final.zkey",
+      "key": "zk-symmetric-crypto/11ab427ab8382227f1b18b2a9caa876253c38784/resources/snarkjs/aes-128-ctr/circuit_final.zkey",
+      "size": 26209029,
+      "sha256": "4939972e4df10584edfe24130b8db729bf1e9661ec52e6f3d495c9509644e9f0",
+      "contentType": "application/octet-stream"
+    },
+    {
+      "upstream": "zk-symmetric-crypto",
+      "path": "resources/snarkjs/aes-256-ctr/circuit.wasm",
+      "key": "zk-symmetric-crypto/11ab427ab8382227f1b18b2a9caa876253c38784/resources/snarkjs/aes-256-ctr/circuit.wasm",
+      "size": 505095,
+      "sha256": "297143e0b9721de5b6e7a8efbc4852655bc404e3189949b78335cc69e513e163",
+      "contentType": "application/wasm"
+    },
+    {
+      "upstream": "zk-symmetric-crypto",
+      "path": "resources/snarkjs/aes-256-ctr/circuit_final.zkey",
+      "key": "zk-symmetric-crypto/11ab427ab8382227f1b18b2a9caa876253c38784/resources/snarkjs/aes-256-ctr/circuit_final.zkey",
+      "size": 39450361,
+      "sha256": "0e5ca3d0da94410f52ba9b37681e6c31027e7a971980f88d06a001ab1e9b3192",
+      "contentType": "application/octet-stream"
+    },
+    {
+      "upstream": "zk-symmetric-crypto",
+      "path": "resources/snarkjs/chacha20/circuit.wasm",
+      "key": "zk-symmetric-crypto/11ab427ab8382227f1b18b2a9caa876253c38784/resources/snarkjs/chacha20/circuit.wasm",
+      "size": 234273,
+      "sha256": "9fcd27ab48ed3381b669dcfe6c14c84dcf9952cd73596d035969f7857daab62e",
+      "contentType": "application/wasm"
+    },
+    {
+      "upstream": "zk-symmetric-crypto",
+      "path": "resources/snarkjs/chacha20/circuit_final.zkey",
+      "key": "zk-symmetric-crypto/11ab427ab8382227f1b18b2a9caa876253c38784/resources/snarkjs/chacha20/circuit_final.zkey",
+      "size": 28918669,
+      "sha256": "e8d3e317696c5857faad139f3df3254611225767defed7bc062909c218380606",
+      "contentType": "application/octet-stream"
+    },
+    {
+      "upstream": "zk-symmetric-crypto",
+      "path": "resources/stwo/s2circuits.js",
+      "key": "zk-symmetric-crypto/11ab427ab8382227f1b18b2a9caa876253c38784/resources/stwo/s2circuits.js",
+      "size": 18823,
+      "sha256": "dac12b63760aa1e2b1f87eb76a8e77916fd13db69258a16a9a785d8f288e08ac",
+      "contentType": "text/javascript"
+    },
+    {
+      "upstream": "zk-symmetric-crypto",
+      "path": "resources/stwo/s2circuits_bg.wasm",
+      "key": "zk-symmetric-crypto/11ab427ab8382227f1b18b2a9caa876253c38784/resources/stwo/s2circuits_bg.wasm",
+      "size": 1830614,
+      "sha256": "8c4baf48a68956a87ccd6e7f737cbf549a2cdc722b80776068d9ee33f9347df1",
+      "contentType": "application/wasm"
+    },
+    {
+      "upstream": "license",
+      "path": "LICENSE",
+      "key": "zk-symmetric-crypto/11ab427ab8382227f1b18b2a9caa876253c38784/LICENSE",
+      "size": 1071,
+      "sha256": "9be2d412cc7ba867dca03e50ab49612856bca2b06315949f3d803d46266eb791",
+      "contentType": "text/plain"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reclaim Offscreen Document</title>
+    <script src="/browser-rpc/resources/snarkjs/snarkjs.min.js"></script>
+    <script type="module" src="./load-s2circuits.js"></script>
+  </head>
+  <body>
+    <div id="offscreen-container">
+      <!-- This document is used for proof generation operations that require DOM access -->
+    </div>
+    <!-- Let webpack inject the script automatically -->
+  </body>
+</html>

@@ -1,0 +1,114 @@
+{
+  "format": "umia-zktls-candidate-v1",
+  "id": "fa0e1b42-d5a1-4f29-b1a7-e423b68bbfe5",
+  "identityProvider": "fomo",
+  "version": "1.0.0",
+  "providerConfigs": [
+    {
+      "loginUrl": "https://fomo.family/",
+      "requestData": [
+        {
+          "url": "https://prod-api.fomo.family/v2/users/current",
+          "method": "GET",
+          "urlType": "TEMPLATE",
+          "bodySniff": {
+            "enabled": false,
+            "template": ""
+          },
+          "responseMatches": [
+            {
+              "type": "contains",
+              "value": "\"responseObject\":{\"id\":\"{{fomo_user}}\",\"address\":\""
+            }
+          ],
+          "responseVariables": ["fomo_user"],
+          "responseRedactions": [
+            {
+              "hash": "oprf-raw",
+              "regex": "\"responseObject\":\\{\"id\":\"(?<fomo_user>[0-9a-f-]{36})\",\"address\":\""
+            }
+          ]
+        },
+        {
+          "url": "https://prod-api.fomo.family/v2/users/{{URL_PARAM_1_SECRET}}-{{URL_PARAM_2_SECRET}}-{{URL_PARAM_3_SECRET}}-{{URL_PARAM_4_SECRET}}-{{URL_PARAM_5_SECRET}}",
+          "method": "GET",
+          "urlType": "TEMPLATE",
+          "bodySniff": {
+            "enabled": false,
+            "template": ""
+          },
+          "responseMatches": [
+            {
+              "type": "contains",
+              "value": "\"responseObject\":{\"id\":\"{{fomo_user}}\",\"address\":\""
+            },
+            {
+              "type": "regex",
+              "value": "\"clan\":\\{\"id\":\"(?:87c22801-d5a6-4e9e-8f18-bceadf8b1040|715a68a6-657e-4424-8c65-68ad3af899b1|fc94d51d-4a71-4078-a635-77a11c94a2e9|ea30cc45-bc73-40d5-b909-9d2f49f9bace|5481c4c8-b0fe-496a-b583-6890a677d5d5|ec2aef5b-7370-4a5e-87c9-3053dba02458|75cefc60-e6f6-4189-8073-18e7cb37db5d|7ec62252-3512-435d-a682-5941ee308cda|9769b8df-1a28-46d7-80e4-dc64f6377831|11e5d07c-6f1d-4aa7-8a0d-aacf1c5f2033|e5857909-6100-4425-869f-681beb2be75b|d0f8fd50-ad7a-4138-b1d7-f25d685ec799|80b2cce3-6a0f-47f5-a9e0-ef48baa81309|ee815f8f-7530-4e59-af85-26d9db5a6fe0|22952276-1424-4e49-806f-cdea7a1602ef|5f22ff37-534c-41bb-bbde-b51b1625280a|80159dbe-a27d-49f3-8a16-322d054ddb7f|1ee52238-f464-41ac-ba2e-e7fb86237403|659b4a4b-5063-4815-b5bc-239109e68dd7)\",\"name\":\""
+            }
+          ],
+          "responseVariables": [
+            "fomo_user",
+            "URL_PARAM_1_SECRET",
+            "URL_PARAM_2_SECRET",
+            "URL_PARAM_3_SECRET",
+            "URL_PARAM_4_SECRET",
+            "URL_PARAM_5_SECRET"
+          ],
+          "responseRedactions": [
+            {
+              "hash": "oprf-raw",
+              "regex": "\"responseObject\":\\{\"id\":\"(?<fomo_user>[0-9a-f-]{36})\",\"address\":\""
+            },
+            {
+              "regex": "\"clan\":\\{\"id\":\"(?:87c22801-d5a6-4e9e-8f18-bceadf8b1040|715a68a6-657e-4424-8c65-68ad3af899b1|fc94d51d-4a71-4078-a635-77a11c94a2e9|ea30cc45-bc73-40d5-b909-9d2f49f9bace|5481c4c8-b0fe-496a-b583-6890a677d5d5|ec2aef5b-7370-4a5e-87c9-3053dba02458|75cefc60-e6f6-4189-8073-18e7cb37db5d|7ec62252-3512-435d-a682-5941ee308cda|9769b8df-1a28-46d7-80e4-dc64f6377831|11e5d07c-6f1d-4aa7-8a0d-aacf1c5f2033|e5857909-6100-4425-869f-681beb2be75b|d0f8fd50-ad7a-4138-b1d7-f25d685ec799|80b2cce3-6a0f-47f5-a9e0-ef48baa81309|ee815f8f-7530-4e59-af85-26d9db5a6fe0|22952276-1424-4e49-806f-cdea7a1602ef|5f22ff37-534c-41bb-bbde-b51b1625280a|80159dbe-a27d-49f3-8a16-322d054ddb7f|1ee52238-f464-41ac-ba2e-e7fb86237403|659b4a4b-5063-4815-b5bc-239109e68dd7)\",\"name\":\""
+            }
+          ],
+          "writeRedactionMode": "zk"
+        }
+      ]
+    }
+  ],
+  "providerRuntime": {
+    "pageTitle": "Fomo clan membership — All listed clans",
+    "stepsToFollow": "Sign in to Fomo. Your own profile must list one of these clans: Sparsity, Fantom Troupe, Risk On, WAGMI, The Big Blue, Boogle, Dabal, Unipcs, HFT, Nobi Ventures, Grand, Prosperity Customer Funds, Heaven, UWU, One Life, BIN, Hedgooor, IncelTradingDesk, Ender. Membership is matched by clan ID, and both responses must name the same account.",
+    "requestChain": {
+      "readyUrl": "https://prod-api.fomo.family/v2/users/pin",
+      "responseParameters": [
+        {
+          "requestIndex": 0,
+          "path": ["responseObject", "id"],
+          "parameter": "URL_PARAM_1_SECRET",
+          "slice": [0, 8]
+        },
+        {
+          "requestIndex": 0,
+          "path": ["responseObject", "id"],
+          "parameter": "URL_PARAM_2_SECRET",
+          "slice": [9, 13]
+        },
+        {
+          "requestIndex": 0,
+          "path": ["responseObject", "id"],
+          "parameter": "URL_PARAM_3_SECRET",
+          "slice": [14, 18]
+        },
+        {
+          "requestIndex": 0,
+          "path": ["responseObject", "id"],
+          "parameter": "URL_PARAM_4_SECRET",
+          "slice": [19, 23]
+        },
+        {
+          "requestIndex": 0,
+          "path": ["responseObject", "id"],
+          "parameter": "URL_PARAM_5_SECRET",
+          "slice": [24, 36]
+        }
+      ]
+    }
+  },
+  "providerType": "PUBLIC",
+  "useProxy": false,
+  "source": "local"
+}

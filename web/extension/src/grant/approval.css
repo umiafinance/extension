@@ -1,0 +1,197 @@
+.umia-approval {
+  display: flex;
+  flex-direction: column;
+  width: 440px;
+  overflow: hidden;
+  background: var(--color-shell);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-lg);
+  color: var(--color-foreground);
+  font: 400 14px / 20px var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.umia-approval__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 32px 24px;
+  background: var(--color-card);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+}
+
+.umia-connection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.umia-connection__dots {
+  display: flex;
+  gap: 12px;
+}
+
+.umia-connection__dots i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-border-strong);
+}
+
+/* A pulse travels from the Umia mark to the provider, one dot after another. */
+.umia-connection:not([data-phase="expired"]) .umia-connection__dots i {
+  animation: umia-relay 1.6s ease-in-out infinite;
+}
+
+.umia-connection[data-phase="granted"] .umia-connection__dots i {
+  animation-duration: 1s;
+}
+
+.umia-connection__dots i:nth-child(2) {
+  animation-delay: 0.16s;
+}
+
+.umia-connection__dots i:nth-child(3) {
+  animation-delay: 0.32s;
+}
+
+.umia-connection__dots i:nth-child(4) {
+  animation-delay: 0.48s;
+}
+
+.umia-connection__dots i:nth-child(5) {
+  animation-delay: 0.64s;
+}
+
+@keyframes umia-relay {
+  0%,
+  45%,
+  100% {
+    background: var(--color-border-strong);
+    transform: scale(1);
+  }
+  18% {
+    background: var(--color-brand);
+    transform: scale(1.35);
+  }
+}
+
+.umia-provider-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-logo-surface);
+}
+
+.umia-provider-logo img {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  object-fit: contain;
+}
+
+.umia-approval__text {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: center;
+}
+
+.umia-approval__text h1 {
+  font: 500 20px / 28px var(--font-display);
+  letter-spacing: -0.3px;
+}
+
+.umia-approval__text p {
+  color: var(--color-muted-foreground);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.umia-sees {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  background: var(--color-tray);
+  border-radius: var(--radius-tile);
+}
+
+.umia-sees__label {
+  color: var(--color-muted-foreground);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.umia-sees__label:not(:first-child) {
+  margin-top: 4px;
+  padding-top: 12px;
+  background: var(--dashed-rule) top / 100% 1px no-repeat;
+}
+
+.umia-sees ul {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0;
+  list-style: none;
+}
+
+.umia-sees li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  color: var(--color-foreground);
+}
+
+.umia-sees svg {
+  flex-shrink: 0;
+  color: var(--color-muted-foreground);
+}
+
+.umia-sees li[data-kind="receives"] svg {
+  color: var(--color-success);
+}
+
+.umia-approval__actions {
+  display: flex;
+  width: 100%;
+  gap: 8px;
+}
+
+.umia-approval__actions .umia-button {
+  flex: 1;
+}
+
+.umia-approval__status {
+  display: flex;
+  width: 100%;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--color-muted-foreground);
+  font-weight: 500;
+}
+
+.umia-approval__footer {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 16px 24px;
+  color: var(--color-muted-foreground);
+}
+
+.umia-approval__footer svg {
+  flex-shrink: 0;
+}

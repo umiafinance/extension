@@ -1,0 +1,114 @@
+{
+  "format": "umia-zktls-candidate-v1",
+  "id": "dc6cbaa4-647d-4548-ab26-cecf2c7b75aa",
+  "identityProvider": "fomo",
+  "version": "1.0.0",
+  "providerConfigs": [
+    {
+      "loginUrl": "https://fomo.family/",
+      "requestData": [
+        {
+          "url": "https://prod-api.fomo.family/v2/users/current",
+          "method": "GET",
+          "urlType": "TEMPLATE",
+          "bodySniff": {
+            "enabled": false,
+            "template": ""
+          },
+          "responseMatches": [
+            {
+              "type": "contains",
+              "value": "\"responseObject\":{\"id\":\"{{fomo_user}}\",\"address\":\""
+            }
+          ],
+          "responseVariables": ["fomo_user"],
+          "responseRedactions": [
+            {
+              "hash": "oprf-raw",
+              "regex": "\"responseObject\":\\{\"id\":\"(?<fomo_user>[0-9a-f-]{36})\",\"address\":\""
+            }
+          ]
+        },
+        {
+          "url": "https://prod-api.fomo.family/v2/users/{{URL_PARAM_1_SECRET}}-{{URL_PARAM_2_SECRET}}-{{URL_PARAM_3_SECRET}}-{{URL_PARAM_4_SECRET}}-{{URL_PARAM_5_SECRET}}",
+          "method": "GET",
+          "urlType": "TEMPLATE",
+          "bodySniff": {
+            "enabled": false,
+            "template": ""
+          },
+          "responseMatches": [
+            {
+              "type": "contains",
+              "value": "\"responseObject\":{\"id\":\"{{fomo_user}}\",\"address\":\""
+            },
+            {
+              "type": "regex",
+              "value": "\"clan\":\\{\"id\":\"(?:87c22801-d5a6-4e9e-8f18-bceadf8b1040|715a68a6-657e-4424-8c65-68ad3af899b1|fc94d51d-4a71-4078-a635-77a11c94a2e9|ea30cc45-bc73-40d5-b909-9d2f49f9bace|5481c4c8-b0fe-496a-b583-6890a677d5d5|ec2aef5b-7370-4a5e-87c9-3053dba02458|75cefc60-e6f6-4189-8073-18e7cb37db5d)\",\"name\":\""
+            }
+          ],
+          "responseVariables": [
+            "fomo_user",
+            "URL_PARAM_1_SECRET",
+            "URL_PARAM_2_SECRET",
+            "URL_PARAM_3_SECRET",
+            "URL_PARAM_4_SECRET",
+            "URL_PARAM_5_SECRET"
+          ],
+          "responseRedactions": [
+            {
+              "hash": "oprf-raw",
+              "regex": "\"responseObject\":\\{\"id\":\"(?<fomo_user>[0-9a-f-]{36})\",\"address\":\""
+            },
+            {
+              "regex": "\"clan\":\\{\"id\":\"(?:87c22801-d5a6-4e9e-8f18-bceadf8b1040|715a68a6-657e-4424-8c65-68ad3af899b1|fc94d51d-4a71-4078-a635-77a11c94a2e9|ea30cc45-bc73-40d5-b909-9d2f49f9bace|5481c4c8-b0fe-496a-b583-6890a677d5d5|ec2aef5b-7370-4a5e-87c9-3053dba02458|75cefc60-e6f6-4189-8073-18e7cb37db5d)\",\"name\":\""
+            }
+          ],
+          "writeRedactionMode": "zk"
+        }
+      ]
+    }
+  ],
+  "providerRuntime": {
+    "pageTitle": "Fomo clan membership — Recommended clans",
+    "stepsToFollow": "Sign in to Fomo. Your own profile must list one of these clans: Sparsity, Fantom Troupe, Risk On, WAGMI, The Big Blue, Boogle, Dabal. Membership is matched by clan ID, and both responses must name the same account.",
+    "requestChain": {
+      "readyUrl": "https://prod-api.fomo.family/v2/users/pin",
+      "responseParameters": [
+        {
+          "requestIndex": 0,
+          "path": ["responseObject", "id"],
+          "parameter": "URL_PARAM_1_SECRET",
+          "slice": [0, 8]
+        },
+        {
+          "requestIndex": 0,
+          "path": ["responseObject", "id"],
+          "parameter": "URL_PARAM_2_SECRET",
+          "slice": [9, 13]
+        },
+        {
+          "requestIndex": 0,
+          "path": ["responseObject", "id"],
+          "parameter": "URL_PARAM_3_SECRET",
+          "slice": [14, 18]
+        },
+        {
+          "requestIndex": 0,
+          "path": ["responseObject", "id"],
+          "parameter": "URL_PARAM_4_SECRET",
+          "slice": [19, 23]
+        },
+        {
+          "requestIndex": 0,
+          "path": ["responseObject", "id"],
+          "parameter": "URL_PARAM_5_SECRET",
+          "slice": [24, 36]
+        }
+      ]
+    }
+  },
+  "providerType": "PUBLIC",
+  "useProxy": false,
+  "source": "local"
+}

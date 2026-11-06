@@ -1,0 +1,104 @@
+.umia-widget,
+.umia-widget *,
+.umia-approval,
+.umia-approval * {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.umia-widget p,
+.umia-approval p {
+  overflow-wrap: break-word;
+}
+
+/* The Lottie canvas leaves room for confetti: the body spans 56.25% of it. --mark-size is the
+   body's size, so the canvas overflows the box by the same ratio on every side. */
+.umia-mark {
+  position: relative;
+  width: var(--mark-size);
+  height: var(--mark-size);
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+.umia-mark > svg {
+  position: absolute;
+  inset: -38.9%;
+  width: 177.8% !important;
+  height: 177.8% !important;
+}
+
+.umia-spinner {
+  flex-shrink: 0;
+  animation: umia-spin 0.8s linear infinite;
+}
+
+@keyframes umia-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.umia-rule {
+  height: 1px;
+  width: 100%;
+  flex-shrink: 0;
+  background: var(--dashed-rule);
+}
+
+.umia-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 20px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  font: 600 16px / 24px var(--font-sans);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 120ms ease,
+    opacity 120ms ease;
+}
+
+.umia-button[data-variant="primary"] {
+  background: var(--color-primary);
+  border-color: var(--color-primary-border);
+  color: var(--color-primary-foreground);
+  box-shadow: var(--shadow-control-inset);
+}
+
+.umia-button[data-variant="primary"]:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+}
+
+.umia-button[data-variant="outline"] {
+  background: transparent;
+  border-color: var(--color-outline-border);
+  color: var(--color-foreground);
+}
+
+.umia-button[data-variant="outline"]:hover:not(:disabled) {
+  background: var(--color-tray);
+}
+
+.umia-button:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+.umia-button:focus-visible,
+.umia-icon-button:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .umia-spinner,
+  .umia-waiting__dot,
+  .umia-connection__dots i {
+    animation: none !important;
+  }
+}

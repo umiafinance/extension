@@ -1,0 +1,20 @@
+{
+  "name": "@umia/zktls-config",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./self-host": "./src/self-host.ts",
+    "./login-url": "./src/login-url.ts",
+    "./login-url.golden": "./src/login-url.golden.ts",
+    "./request-chain": "./src/request-chain.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

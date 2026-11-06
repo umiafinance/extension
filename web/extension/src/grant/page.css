@@ -1,0 +1,23 @@
+/* The approval fills its own popup window, so it drops the floating panel's frame. */
+html:not([data-umia-theme-ready]) {
+  visibility: hidden;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--color-shell);
+}
+
+#view > .umia-approval {
+  width: 100%;
+  min-height: 100vh;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+#view > .umia-approval .umia-approval__card {
+  border-radius: 0 0 var(--radius-card) var(--radius-card);
+}

@@ -1,0 +1,233 @@
+{
+  "ethglobal": {
+    "isScriptRequestingClaim": false,
+    "version": {
+      "major": 1,
+      "minor": 0,
+      "patch": 1,
+      "prereleaseTag": null,
+      "prereleaseNumber": null
+    },
+    "loginUrl": "https://ethglobal.com/home",
+    "geoLocation": "{{DYNAMIC_GEO}}",
+    "requestData": [
+      {
+        "url": "https://api2.ethglobal.com/graphql",
+        "expectedPageUrl": "",
+        "urlType": "TEMPLATE",
+        "method": "POST",
+        "responseMatches": [
+          {
+            "value": "\"uuid\":\"{{ethglobalhackathon}}\"",
+            "type": "contains",
+            "isOptional": false,
+            "order": 0,
+            "invert": false
+          },
+          {
+            "value": "\"getAttendeeSelf\":\\[\\{",
+            "type": "regex",
+            "isOptional": false,
+            "order": 1,
+            "invert": false
+          }
+        ],
+        "responseRedactions": [
+          {
+            "order": 0,
+            "regex": "\"uuid\":\"(?<ethglobalhackathon>[A-Za-z0-9_-]+)\"",
+            "hash": "oprf-raw"
+          },
+          {
+            "order": 1,
+            "regex": "\"getAttendeeSelf\":\\[\\{"
+          }
+        ],
+        "bodySniff": {
+          "enabled": true,
+          "template": "{\"query\":\"{ getUserSelf { uuid } getAttendeeSelf { id hackers { id status } } }\"}"
+        },
+        "responseVariables": [
+          "ethglobalhackathon"
+        ],
+        "credentials": "include"
+      }
+    ],
+    "allowedInjectedRequestData": [],
+    "injectionType": "HAWKEYE",
+    "verificationType": "WITNESS",
+    "name": "ethglobal"
+  },
+  "devfolio": {
+    "isScriptRequestingClaim": false,
+    "version": {
+      "major": 1,
+      "minor": 0,
+      "patch": 1,
+      "prereleaseTag": null,
+      "prereleaseNumber": null
+    },
+    "loginUrl": "https://devfolio.co/my-hackathons",
+    "geoLocation": "{{DYNAMIC_GEO}}",
+    "requestData": [
+      {
+        "url": "https://api.devfolio.co/v1/graphql",
+        "expectedPageUrl": "",
+        "urlType": "TEMPLATE",
+        "method": "POST",
+        "responseMatches": [
+          {
+            "value": "\"uuid\":\"{{devfoliohackathon}}\"",
+            "type": "contains",
+            "isOptional": false,
+            "order": 0,
+            "invert": false
+          },
+          {
+            "value": "\"user_hackathons\":\\[\\{",
+            "type": "regex",
+            "isOptional": false,
+            "order": 1,
+            "invert": false
+          }
+        ],
+        "responseRedactions": [
+          {
+            "order": 0,
+            "regex": "\"uuid\":\"(?<devfoliohackathon>[A-Za-z0-9_-]+)\"",
+            "hash": "oprf-raw"
+          },
+          {
+            "order": 1,
+            "regex": "\"user_hackathons\":\\[\\{"
+          }
+        ],
+        "bodySniff": {
+          "enabled": true,
+          "template": "{\"query\":\"{ me { uuid user_hackathons { uuid role status } } }\"}"
+        },
+        "responseVariables": [
+          "devfoliohackathon"
+        ],
+        "credentials": "include"
+      }
+    ],
+    "allowedInjectedRequestData": [],
+    "injectionType": "HAWKEYE",
+    "verificationType": "WITNESS",
+    "name": "devfolio"
+  },
+  "tw-fairscale": {
+    "isScriptRequestingClaim": false,
+    "version": {
+      "major": 1,
+      "minor": 0,
+      "patch": 2,
+      "prereleaseTag": null,
+      "prereleaseNumber": null
+    },
+    "loginUrl": "https://fairscale.xyz/umia",
+    "geoLocation": "{{DYNAMIC_GEO}}",
+    "requestData": [
+      {
+        "url": "https://fairscale.xyz/api/embed/authorize",
+        "expectedPageUrl": "",
+        "urlType": "TEMPLATE",
+        "method": "POST",
+        "responseMatches": [
+          {
+            "value": "\"authorized\":false",
+            "type": "contains",
+            "isOptional": false,
+            "order": 0,
+            "invert": false
+          },
+          {
+            "value": "\"wallet\":\"{{fairscalewallet}}\"",
+            "type": "contains",
+            "isOptional": false,
+            "order": 1,
+            "invert": false
+          }
+        ],
+        "responseRedactions": [
+          {
+            "order": 0,
+            "regex": "\"authorized\":false"
+          },
+          {
+            "order": 1,
+            "regex": "\"wallet\":\"(?<fairscalewallet>[1-9A-HJ-NP-Za-km-z]{32,44})\"",
+            "hash": "oprf-raw"
+          }
+        ],
+        "bodySniff": {
+          "enabled": true,
+          "template": "{\"appId\":\"umia-finance\",\"wallet\":\"{{REQ_BODY_WALLET_SECRET}}\",\"token\":\"{{REQ_BODY_TOKEN_SECRET}}\",\"privyUserId\":\"{{REQ_BODY_PRIVYID_SECRET}}\"}"
+        },
+        "responseVariables": [
+          "fairscalewallet"
+        ],
+        "credentials": "include"
+      }
+    ],
+    "allowedInjectedRequestData": [],
+    "injectionType": "HAWKEYE",
+    "verificationType": "WITNESS",
+    "name": "tw-fairscale"
+  },
+  "github": {
+    "isScriptRequestingClaim": false,
+    "version": {
+      "major": 1,
+      "minor": 2,
+      "patch": 0,
+      "prereleaseTag": null,
+      "prereleaseNumber": null
+    },
+    "loginUrl": "https://github.com/settings/profile",
+    "userAgent": {
+      "ios": "",
+      "android": "Mozilla/5.0 (Linux; Android 15) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.6668.69 Mobile Safari/537.36"
+    },
+    "geoLocation": "",
+    "injectionType": "HAWKEYE",
+    "verificationType": "WITNESS",
+    "requestData": [
+      {
+        "url": "https://github.com/settings/profile",
+        "expectedPageUrl": "",
+        "urlType": "TEMPLATE",
+        "method": "GET",
+        "responseMatches": [
+          {
+            "value": "<span class=\"color-fg-muted\">({{username}})</span>",
+            "type": "contains",
+            "invert": false,
+            "description": null,
+            "order": null,
+            "isOptional": false
+          }
+        ],
+        "responseRedactions": [
+          {
+            "xPath": "",
+            "jsonPath": "",
+            "regex": "<span class=\"color-fg-muted\">\\((?<username>.*)\\)</span>",
+            "hash": "oprf-raw"
+          }
+        ],
+        "bodySniff": {
+          "enabled": false,
+          "template": ""
+        },
+        "responseVariables": [
+          "username"
+        ],
+        "writeRedactionMode": null,
+        "credentials": null
+      }
+    ],
+    "name": "github"
+  }
+}

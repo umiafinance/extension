@@ -1,0 +1,114 @@
+{
+  "format": "umia-zktls-candidate-v1",
+  "id": "00b63531-79b9-44d2-b51b-a24f0c3f335a",
+  "identityProvider": "fomo",
+  "version": "1.0.0",
+  "providerConfigs": [
+    {
+      "loginUrl": "https://fomo.family/",
+      "requestData": [
+        {
+          "url": "https://prod-api.fomo.family/v2/users/current",
+          "method": "GET",
+          "urlType": "TEMPLATE",
+          "bodySniff": {
+            "enabled": false,
+            "template": ""
+          },
+          "responseMatches": [
+            {
+              "type": "contains",
+              "value": "\"responseObject\":{\"id\":\"{{fomo_user}}\",\"address\":\""
+            }
+          ],
+          "responseVariables": ["fomo_user"],
+          "responseRedactions": [
+            {
+              "hash": "oprf-raw",
+              "regex": "\"responseObject\":\\{\"id\":\"(?<fomo_user>[0-9a-f-]{36})\",\"address\":\""
+            }
+          ]
+        },
+        {
+          "url": "https://prod-api.fomo.family/v2/users/{{URL_PARAM_1_SECRET}}-{{URL_PARAM_2_SECRET}}-{{URL_PARAM_3_SECRET}}-{{URL_PARAM_4_SECRET}}-{{URL_PARAM_5_SECRET}}",
+          "method": "GET",
+          "urlType": "TEMPLATE",
+          "bodySniff": {
+            "enabled": false,
+            "template": ""
+          },
+          "responseMatches": [
+            {
+              "type": "contains",
+              "value": "\"responseObject\":{\"id\":\"{{fomo_user}}\",\"address\":\""
+            },
+            {
+              "type": "regex",
+              "value": "\"averageHoldTimeSeconds\"\\s*:\\s*(?:(?:[5-9][0-9]{5}|4[4-9][0-9]{4}|43[3-9][0-9]{3}|432[1-9][0-9]{2}|4320[1-9][0-9]|43200[1-9]|[1-9][0-9]{6,})(?:\\.[0-9]+)?|432000\\.0*[1-9][0-9]*)\\s*[,}]"
+            }
+          ],
+          "responseVariables": [
+            "fomo_user",
+            "URL_PARAM_1_SECRET",
+            "URL_PARAM_2_SECRET",
+            "URL_PARAM_3_SECRET",
+            "URL_PARAM_4_SECRET",
+            "URL_PARAM_5_SECRET"
+          ],
+          "responseRedactions": [
+            {
+              "hash": "oprf-raw",
+              "regex": "\"responseObject\":\\{\"id\":\"(?<fomo_user>[0-9a-f-]{36})\",\"address\":\""
+            },
+            {
+              "regex": "\"averageHoldTimeSeconds\"\\s*:\\s*(?:(?:[5-9][0-9]{5}|4[4-9][0-9]{4}|43[3-9][0-9]{3}|432[1-9][0-9]{2}|4320[1-9][0-9]|43200[1-9]|[1-9][0-9]{6,})(?:\\.[0-9]+)?|432000\\.0*[1-9][0-9]*)\\s*[,}]"
+            }
+          ],
+          "writeRedactionMode": "zk"
+        }
+      ]
+    }
+  ],
+  "providerRuntime": {
+    "pageTitle": "FOMO \u00b7 Average hold time > 5 days",
+    "stepsToFollow": "Sign in to FOMO. Your own profile must have an average hold time strictly greater than 5 days (432,000 seconds). Both responses must name the same account. A missing hold time does not qualify.",
+    "requestChain": {
+      "readyUrl": "https://prod-api.fomo.family/v2/users/pin",
+      "responseParameters": [
+        {
+          "requestIndex": 0,
+          "path": ["responseObject", "id"],
+          "parameter": "URL_PARAM_1_SECRET",
+          "slice": [0, 8]
+        },
+        {
+          "requestIndex": 0,
+          "path": ["responseObject", "id"],
+          "parameter": "URL_PARAM_2_SECRET",
+          "slice": [9, 13]
+        },
+        {
+          "requestIndex": 0,
+          "path": ["responseObject", "id"],
+          "parameter": "URL_PARAM_3_SECRET",
+          "slice": [14, 18]
+        },
+        {
+          "requestIndex": 0,
+          "path": ["responseObject", "id"],
+          "parameter": "URL_PARAM_4_SECRET",
+          "slice": [19, 23]
+        },
+        {
+          "requestIndex": 0,
+          "path": ["responseObject", "id"],
+          "parameter": "URL_PARAM_5_SECRET",
+          "slice": [24, 36]
+        }
+      ]
+    }
+  },
+  "providerType": "PUBLIC",
+  "useProxy": false,
+  "source": "local"
+}

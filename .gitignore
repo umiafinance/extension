@@ -1,0 +1,6 @@
+node_modules/
+.assets/
+shared/zktls/extension-sdk/build/
+shared/zktls/extension-sdk/zip/
+web/extension/dist/
+web/extension/*.zip

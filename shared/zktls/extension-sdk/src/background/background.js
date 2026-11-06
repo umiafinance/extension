@@ -1,0 +1,346 @@
+import "../utils/polyfills";
+
+// Import necessary utilities and libraries
+import {
+  fetchProviderData,
+  updateSessionStatus,
+  postTelemetry,
+  submitBoundProofs,
+} from "../utils/fetch-calls";
+import { RECLAIM_SESSION_STATUS, MESSAGE_ACTIONS, MESSAGE_SOURCES } from "../utils/constants";
+import { generateProof, formatProof } from "../utils/proof-generator";
+import { createClaimObject } from "../utils/claim-creator";
+import { loggingHub } from "../utils/logger/LoggingHub";
+import { EVENT_TYPES } from "../utils/logger/constants";
+import { SessionTimerManager } from "../utils/session-timer";
+import { installOffscreenReadyListener } from "../utils/offscreen-manager";
+import { claimProgress } from "../utils/claim-progress";
+import { reportTelemetry } from "./telemetry";
+import { failureCode } from "../utils/constants/interfaces";
+
+import * as messageRouter from "./messageRouter";
+import * as sessionManager from "./sessionManager";
+
+import * as tabManager from "./tabManager";
+import * as proofQueue from "./proofQueue";
+import * as cookieUtils from "./cookieUtils";
+
+/**
+ * Which link of the extraction chain failed -> how to report it.
+ *
+ * Spelled to match the InApp SDK's claim_creation.dart, which emits the same
+ * four names at the same severities, so one query covers both SDKs. xPath and
+ * jsonPath are errors — a selector that cannot find its element is almost always
+ * a provider that upstream changed. A regex miss and an unsatisfied
+ * responseMatch are warnings: on a page that is still loading they are the
+ * normal intermediate state, and polling may well resolve them.
+ */
+const EXTRACTION_FAILURE_REPORTS = {
+  xPath: { level: "error", eventType: EVENT_TYPES.X_PATH_MATCH_REQUIREMENT_FAILED },
+  jsonPath: { level: "error", eventType: EVENT_TYPES.JSON_PATH_MATCH_REQUIREMENT_FAILED },
+  regex: { level: "warn", eventType: EVENT_TYPES.REGEX_MATCH_REQUIREMENT_FAILED },
+  responseMatch: { level: "warn", eventType: EVENT_TYPES.NO_RESPONSE_MATCH_WARNING },
+};
+
+/**
+ * Say why the matched request did not yield a claim.
+ *
+ * Only ever reached for a request the content-script gate already matched, so
+ * this is the "we found your request but could not read it" report, not
+ * per-request noise.
+ *
+ * The response content the stage was looking at goes in the log PAYLOAD, never
+ * in the message: the payload is redacted at INFO, while a message string is
+ * printed verbatim.
+ *
+ * Repeats are demoted to debug. The content script re-polls every
+ * NETWORK_FILTERING_INTERVAL_MS, so an unresolvable redaction is retried for the
+ * lifetime of the session timer; without this, one stuck provider would emit the
+ * same error ~30 times per session.
+ *
+ * @param {Object} ctx
+ * @param {Error & {stage?: string, element?: string}} error
+ * @param {Object} criteria - the matched requestData entry
+ */
+function reportExtractionFailure(ctx, error, criteria) {
+  const stage = error?.stage || "redaction";
+  const report = EXTRACTION_FAILURE_REPORTS[stage];
+
+  const message =
+    `[BACKGROUND] Matched request could not be extracted (${stage}) for request hash ` +
+    `${criteria?.requestHash}, will retry on a later response: ${error.message}`;
+
+  const key = `${criteria?.requestHash}|${stage}|${error.message}`;
+  const firstTime = !ctx.reportedExtractionFailures.has(key);
+  ctx.reportedExtractionFailures.add(key);
+
+  if (!report) {
+    // Unclassified: keep the pre-existing level and event so nothing regresses.
+    loggingHub.info(message, "background.claim", { eventType: EVENT_TYPES.NO_PARAMETERS_FOUND });
+    return;
+  }
+
+  const payload = error.element === undefined ? undefined : { element: error.element };
+  loggingHub[firstTime ? report.level : "debug"](message, "background.claim", {
+    eventType: report.eventType,
+    payload,
+  });
+}
+
+export default function initBackground() {
+  installOffscreenReadyListener();
+
+  // Context object to hold shared state and dependencies
+  const ctx = {
+    // State
+    activeTabId: null,
+    providerData: null,
+    providerLoginUrl: null,
+    parameters: {},
+    context: null,
+    providerId: null,
+    appId: null,
+    sessionId: null,
+    sessionEnd: null,
+    // Set by the consumer; called once the active session has ended.
+    onSessionEnd: null,
+    session: null,
+    publicData: null,
+    aborted: false,
+    originalTabId: null,
+    initiatingSender: null,
+    managedTabs: new Set(),
+    providerRequestsByHash: new Map(),
+    generatedProofs: new Map(),
+    filteredRequests: new Map(),
+    responseMatchFailures: new Set(),
+    // Extraction failures already reported this session, so a re-polled request
+    // does not repeat the same error at full severity. See
+    // reportExtractionFailure().
+    reportedExtractionFailures: new Set(),
+    proofGenerationQueue: [],
+    isProcessingQueue: false,
+    processingSessionId: null,
+    firstRequestReceived: false,
+    initPopupMessage: new Map(),
+    providerDataMessage: new Map(),
+    injectionOperations: new Map(),
+    telemetryWindow: null,
+    activeSessionId: null,
+    sessionTimerManager: new SessionTimerManager(),
+    // Constants and dependencies
+    fetchProviderData,
+    updateSessionStatus,
+    postTelemetry,
+    submitBoundProofs,
+    closeBoundSession: async (sessionId) => {
+      if (!sessionId) return;
+      try {
+        await chrome.runtime.sendMessage({
+          action: MESSAGE_ACTIONS.CLOSE_BOUND_SESSION,
+          source: MESSAGE_SOURCES.BACKGROUND,
+          target: MESSAGE_SOURCES.OFFSCREEN,
+          sessionId,
+        });
+      } catch {
+        // A missing offscreen document has no live socket to close.
+      }
+    },
+    RECLAIM_SESSION_STATUS,
+    MESSAGE_ACTIONS,
+    MESSAGE_SOURCES,
+    EVENT_TYPES,
+    generateProof,
+    formatProof,
+    createClaimObject,
+    loggingHub,
+    // Methods to be set below
+    processFilteredRequest: null,
+    failSession: null,
+    submitProofs: null,
+  };
+
+  loggingHub.info("[BACKGROUND] Background initialized", "background.init");
+
+  // Bind sessionManager methods to context
+  ctx.failSession = (...args) => sessionManager.failSession(ctx, ...args);
+  ctx.submitProofs = (...args) => sessionManager.submitProofs(ctx, ...args);
+  // Bound rather than imported: proofQueue is a set of free functions taking
+  // ctx first and importing nothing from here, so this is how it reaches it.
+  ctx.claimProgress = () => claimProgress(ctx);
+  ctx.reportTelemetry = (type) => reportTelemetry(ctx, type);
+
+  ctx.processFilteredRequest = async function (request, criteria, sessionId, loginUrl) {
+    // The provider tab keeps polling after a session ends; its cookies and claims are no
+    // longer ours to use.
+    if (!ctx.activeSessionId || ctx.aborted) return { success: false, error: "CANCELLED" };
+    try {
+      sessionId = ctx.sessionId || sessionId;
+      if (!sessionId) {
+        ctx.failSession("UNKNOWN", criteria?.requestHash);
+        return { success: false, error: "Session not initialized" };
+      }
+      if (!ctx.firstRequestReceived) {
+        ctx.firstRequestReceived = true;
+        ctx.sessionTimerManager.startSessionTimer();
+      }
+
+      loggingHub.info(
+        `[BACKGROUND] Filtering request for request hash: ${criteria.requestHash}`,
+        "background.filter",
+        { eventType: EVENT_TYPES.REQUEST_MATCHED },
+      );
+
+      let topLevelUrl;
+      try {
+        const activeTab = await chrome.tabs.get(ctx.activeTabId);
+        topLevelUrl = activeTab?.url;
+      } catch (error) {
+        loggingHub.info(
+          "[BACKGROUND] Could not read active tab URL for cookie lookup: " + error?.message,
+          "background.cookies",
+        );
+      }
+
+      const cookies = await cookieUtils.getCookiesForUrl(request.url, loggingHub, topLevelUrl);
+      if (cookies) {
+        request.cookieStr = cookies;
+      }
+
+      // Real fetch/XHR calls always carry a browser-set Origin header that page JS
+      // can neither read nor override, so the interceptor never captures it. Pass
+      // the page's origin through so the claim can reconstruct it.
+      if (topLevelUrl) {
+        try {
+          request.pageOrigin = new URL(topLevelUrl).origin;
+        } catch (error) {
+          loggingHub.info(
+            "[BACKGROUND] Could not derive page origin from tab URL: " + error?.message,
+            "background.claim",
+          );
+        }
+      }
+
+      loggingHub.debug(`[BACKGROUND] Cookies for URL: ${request.url}`, "background.cookies");
+
+      chrome.tabs.sendMessage(ctx.activeTabId, {
+        action: ctx.MESSAGE_ACTIONS.CLAIM_CREATION_REQUESTED,
+        source: ctx.MESSAGE_SOURCES.BACKGROUND,
+        target: ctx.MESSAGE_SOURCES.CONTENT_SCRIPT,
+        // progress is session-wide; the popup's own counters reset on every
+        // navigation. See claimProgress().
+        data: { requestHash: criteria.requestHash, progress: claimProgress(ctx) },
+      });
+
+      loggingHub.info(
+        "[BACKGROUND] Claim creation requested for request hash: " + criteria.requestHash,
+        "background.claim",
+        { eventType: EVENT_TYPES.STARTING_CLAIM_CREATION },
+      );
+
+      let claimData = null;
+      try {
+        const criteriaWithGeo = {
+          ...criteria,
+          geoLocation: ctx.providerData?.geoLocation ?? "",
+          extensionConfig: ctx.providerData?.extensionConfig,
+        };
+        claimData = await ctx.createClaimObject(
+          request,
+          criteriaWithGeo,
+          sessionId,
+          ctx.providerId,
+          loginUrl,
+          loggingHub,
+          ctx.context,
+          ctx.session,
+        );
+      } catch (error) {
+        // A redaction that doesn't resolve against *this* response is not a
+        // failure — the page usually just hasn't rendered the data yet. Report
+        // it as retryable so the content script keeps polling, and leave the
+        // session (and the popup) alone.
+        if (error?.retryable) {
+          reportExtractionFailure(ctx, error, criteria);
+          return { success: false, retryable: true, error: error.message };
+        }
+
+        loggingHub.error(
+          "[BACKGROUND] Error creating claim object: " + error.message,
+          "background.claim",
+          { eventType: EVENT_TYPES.CLAIM_PARAMETER_VALIDATION_FAILED_EXCEPTION },
+        );
+        chrome.tabs.sendMessage(ctx.activeTabId, {
+          action: ctx.MESSAGE_ACTIONS.CLAIM_CREATION_FAILED,
+          source: ctx.MESSAGE_SOURCES.BACKGROUND,
+          target: ctx.MESSAGE_SOURCES.CONTENT_SCRIPT,
+          data: { requestHash: criteria.requestHash },
+        });
+
+        ctx.failSession(failureCode(error, "PROOF_GENERATION_FAILED"), criteria.requestHash);
+        return { success: false, error: error.message };
+      }
+
+      if (claimData) {
+        chrome.tabs.sendMessage(ctx.activeTabId, {
+          action: ctx.MESSAGE_ACTIONS.CLAIM_CREATION_SUCCESS,
+          source: ctx.MESSAGE_SOURCES.BACKGROUND,
+          target: ctx.MESSAGE_SOURCES.CONTENT_SCRIPT,
+          data: { requestHash: criteria.requestHash },
+        });
+        loggingHub.info(
+          "[BACKGROUND] Claim Object creation successful for request hash: " + criteria.requestHash,
+          "background.claim",
+          { eventType: EVENT_TYPES.CLAIM_CREATION_STARTED },
+        );
+      }
+      const providerRequest = {
+        url: criteria?.url || request?.url || "",
+        expectedPageUrl: criteria?.expectedPageUrl || "",
+        urlType: criteria?.urlType || "EXACT",
+        method: criteria?.method || request?.method || "GET",
+        responseMatches: Array.isArray(criteria?.responseMatches) ? criteria.responseMatches : [],
+        responseRedactions: Array.isArray(criteria?.responseRedactions)
+          ? criteria.responseRedactions
+          : [],
+        requestHash: criteria?.requestHash,
+      };
+      if (providerRequest.requestHash) {
+        ctx.providerRequestsByHash.set(providerRequest.requestHash, providerRequest);
+      }
+      proofQueue.addToProofGenerationQueue(ctx, claimData, criteria.requestHash);
+      ctx.reportTelemetry("request_captured");
+      loggingHub.info(
+        "[BACKGROUND] Proof generation queued for request hash: " + criteria.requestHash,
+        "background.proof",
+      );
+      return { success: true, message: "Proof generation queued" };
+    } catch (error) {
+      loggingHub.error(
+        "[BACKGROUND] Error processing filtered request: " + error.message,
+        "background.filter",
+        { eventType: EVENT_TYPES.FILTER_REQUEST_ERROR },
+      );
+      ctx.failSession(failureCode(error, "PROOF_GENERATION_FAILED"), criteria.requestHash);
+      return { success: false, error: error.message };
+    }
+  };
+
+  ctx.sessionTimerManager.setCallbacks((_message, requestHash) => {
+    const code = sessionManager.missingRequestCode(ctx);
+    return ctx.failSession(code, requestHash, EVENT_TYPES.CLAIM_CREATION_TIMED_OUT_EXCEPTION);
+  });
+  ctx.sessionTimerManager.setTimerDuration(30000);
+  // Register message handler
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    messageRouter.handleMessage(ctx, message, sender, sendResponse);
+    return true; // Required for async response
+  });
+
+  chrome.tabs.onRemoved.addListener((tabId) => {
+    sessionManager.handleTabRemoved(ctx, tabId).catch(() => {});
+  });
+
+  loggingHub.info("[BACKGROUND] Background initialization complete", "background.init");
+  return ctx;
+}

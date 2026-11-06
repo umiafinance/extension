@@ -1,0 +1,1033 @@
+{
+  "initial": "idle",
+  "states": [
+    {
+      "type": "PlaybackState",
+      "name": "idle",
+      "animation": "",
+      "autoplay": true,
+      "loop": true,
+      "mode": "Forward",
+      "segment": "idle",
+      "transitions": [
+        {
+          "type": "Transition",
+          "toState": "peek-in",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "peek"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "focus-in",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "focus"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "happy",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "happy"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "oops",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "oops"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "PlaybackState",
+      "name": "peek-in",
+      "animation": "",
+      "autoplay": true,
+      "loop": false,
+      "mode": "Forward",
+      "segment": "peek-in",
+      "transitions": [
+        {
+          "type": "Transition",
+          "toState": "peek-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "idle"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "peek-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "focus"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "peek-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "happy"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "peek-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "oops"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "peek",
+          "guards": [
+            {
+              "type": "Event",
+              "inputName": "entered"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "PlaybackState",
+      "name": "peek",
+      "animation": "",
+      "autoplay": true,
+      "loop": true,
+      "mode": "Forward",
+      "segment": "peek",
+      "transitions": [
+        {
+          "type": "Transition",
+          "toState": "peek-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "idle"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "peek-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "focus"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "peek-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "happy"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "peek-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "oops"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "PlaybackState",
+      "name": "peek-out",
+      "animation": "",
+      "autoplay": true,
+      "loop": false,
+      "mode": "Forward",
+      "segment": "peek-out",
+      "transitions": [
+        {
+          "type": "Transition",
+          "toState": "idle",
+          "guards": [
+            {
+              "type": "Event",
+              "inputName": "entered"
+            },
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "idle"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "peek-in",
+          "guards": [
+            {
+              "type": "Event",
+              "inputName": "entered"
+            },
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "peek"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "focus-in",
+          "guards": [
+            {
+              "type": "Event",
+              "inputName": "entered"
+            },
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "focus"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "happy",
+          "guards": [
+            {
+              "type": "Event",
+              "inputName": "entered"
+            },
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "happy"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "oops",
+          "guards": [
+            {
+              "type": "Event",
+              "inputName": "entered"
+            },
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "oops"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "PlaybackState",
+      "name": "focus-in",
+      "animation": "",
+      "autoplay": true,
+      "loop": false,
+      "mode": "Forward",
+      "segment": "focus-in",
+      "transitions": [
+        {
+          "type": "Transition",
+          "toState": "focus-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "idle"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "focus-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "peek"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "focus-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "happy"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "focus-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "oops"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "focus",
+          "guards": [
+            {
+              "type": "Event",
+              "inputName": "entered"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "PlaybackState",
+      "name": "focus",
+      "animation": "",
+      "autoplay": true,
+      "loop": true,
+      "mode": "Forward",
+      "segment": "focus",
+      "transitions": [
+        {
+          "type": "Transition",
+          "toState": "focus-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "idle"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "focus-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "peek"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "focus-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "happy"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "focus-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "oops"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "PlaybackState",
+      "name": "focus-out",
+      "animation": "",
+      "autoplay": true,
+      "loop": false,
+      "mode": "Forward",
+      "segment": "focus-out",
+      "transitions": [
+        {
+          "type": "Transition",
+          "toState": "idle",
+          "guards": [
+            {
+              "type": "Event",
+              "inputName": "entered"
+            },
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "idle"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "peek-in",
+          "guards": [
+            {
+              "type": "Event",
+              "inputName": "entered"
+            },
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "peek"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "focus-in",
+          "guards": [
+            {
+              "type": "Event",
+              "inputName": "entered"
+            },
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "focus"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "happy",
+          "guards": [
+            {
+              "type": "Event",
+              "inputName": "entered"
+            },
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "happy"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "oops",
+          "guards": [
+            {
+              "type": "Event",
+              "inputName": "entered"
+            },
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "oops"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "PlaybackState",
+      "name": "happy",
+      "animation": "",
+      "autoplay": true,
+      "loop": false,
+      "mode": "Forward",
+      "segment": "happy",
+      "transitions": [
+        {
+          "type": "Transition",
+          "toState": "happy-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "idle"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "happy-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "peek"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "happy-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "focus"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "happy-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "oops"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "happy-hold",
+          "guards": [
+            {
+              "type": "Event",
+              "inputName": "entered"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "PlaybackState",
+      "name": "happy-hold",
+      "animation": "",
+      "autoplay": true,
+      "loop": true,
+      "mode": "Forward",
+      "segment": "happy-hold",
+      "transitions": [
+        {
+          "type": "Transition",
+          "toState": "happy-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "idle"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "happy-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "peek"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "happy-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "focus"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "happy-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "oops"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "PlaybackState",
+      "name": "happy-out",
+      "animation": "",
+      "autoplay": true,
+      "loop": false,
+      "mode": "Forward",
+      "segment": "happy-out",
+      "transitions": [
+        {
+          "type": "Transition",
+          "toState": "idle",
+          "guards": [
+            {
+              "type": "Event",
+              "inputName": "entered"
+            },
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "idle"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "peek-in",
+          "guards": [
+            {
+              "type": "Event",
+              "inputName": "entered"
+            },
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "peek"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "focus-in",
+          "guards": [
+            {
+              "type": "Event",
+              "inputName": "entered"
+            },
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "focus"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "happy",
+          "guards": [
+            {
+              "type": "Event",
+              "inputName": "entered"
+            },
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "happy"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "oops",
+          "guards": [
+            {
+              "type": "Event",
+              "inputName": "entered"
+            },
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "oops"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "PlaybackState",
+      "name": "oops",
+      "animation": "",
+      "autoplay": true,
+      "loop": false,
+      "mode": "Forward",
+      "segment": "oops",
+      "transitions": [
+        {
+          "type": "Transition",
+          "toState": "oops-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "idle"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "oops-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "peek"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "oops-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "focus"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "oops-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "happy"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "oops-hold",
+          "guards": [
+            {
+              "type": "Event",
+              "inputName": "entered"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "PlaybackState",
+      "name": "oops-hold",
+      "animation": "",
+      "autoplay": true,
+      "loop": true,
+      "mode": "Forward",
+      "segment": "oops-hold",
+      "transitions": [
+        {
+          "type": "Transition",
+          "toState": "oops-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "idle"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "oops-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "peek"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "oops-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "focus"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "oops-out",
+          "guards": [
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "happy"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "PlaybackState",
+      "name": "oops-out",
+      "animation": "",
+      "autoplay": true,
+      "loop": false,
+      "mode": "Forward",
+      "segment": "oops-out",
+      "transitions": [
+        {
+          "type": "Transition",
+          "toState": "idle",
+          "guards": [
+            {
+              "type": "Event",
+              "inputName": "entered"
+            },
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "idle"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "peek-in",
+          "guards": [
+            {
+              "type": "Event",
+              "inputName": "entered"
+            },
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "peek"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "focus-in",
+          "guards": [
+            {
+              "type": "Event",
+              "inputName": "entered"
+            },
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "focus"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "happy",
+          "guards": [
+            {
+              "type": "Event",
+              "inputName": "entered"
+            },
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "happy"
+            }
+          ]
+        },
+        {
+          "type": "Transition",
+          "toState": "oops",
+          "guards": [
+            {
+              "type": "Event",
+              "inputName": "entered"
+            },
+            {
+              "type": "String",
+              "inputName": "mood",
+              "conditionType": "Equal",
+              "compareTo": "oops"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "inputs": [
+    {
+      "type": "String",
+      "name": "mood",
+      "value": "idle"
+    },
+    {
+      "type": "Event",
+      "name": "entered"
+    }
+  ],
+  "interactions": [
+    {
+      "type": "OnComplete",
+      "stateName": "peek-in",
+      "actions": [
+        {
+          "type": "Fire",
+          "inputName": "entered"
+        }
+      ]
+    },
+    {
+      "type": "OnComplete",
+      "stateName": "peek-out",
+      "actions": [
+        {
+          "type": "Fire",
+          "inputName": "entered"
+        }
+      ]
+    },
+    {
+      "type": "OnComplete",
+      "stateName": "focus-in",
+      "actions": [
+        {
+          "type": "Fire",
+          "inputName": "entered"
+        }
+      ]
+    },
+    {
+      "type": "OnComplete",
+      "stateName": "focus-out",
+      "actions": [
+        {
+          "type": "Fire",
+          "inputName": "entered"
+        }
+      ]
+    },
+    {
+      "type": "OnComplete",
+      "stateName": "happy",
+      "actions": [
+        {
+          "type": "Fire",
+          "inputName": "entered"
+        }
+      ]
+    },
+    {
+      "type": "OnComplete",
+      "stateName": "happy-out",
+      "actions": [
+        {
+          "type": "Fire",
+          "inputName": "entered"
+        }
+      ]
+    },
+    {
+      "type": "OnComplete",
+      "stateName": "oops",
+      "actions": [
+        {
+          "type": "Fire",
+          "inputName": "entered"
+        }
+      ]
+    },
+    {
+      "type": "OnComplete",
+      "stateName": "oops-out",
+      "actions": [
+        {
+          "type": "Fire",
+          "inputName": "entered"
+        }
+      ]
+    }
+  ]
+}

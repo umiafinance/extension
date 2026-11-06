@@ -1,0 +1,209 @@
+/* Inherited properties cross a shadow boundary; reset them so the provider page's styles don't. */
+:host {
+  all: initial;
+}
+
+.umia-widget {
+  display: flex;
+  flex-direction: column;
+  /* Stays inside narrow, short or zoomed tabs: the dock leaves 24px on each side. */
+  width: min(360px, calc(100vw - 48px));
+  max-height: calc(100vh - 48px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: var(--color-shell);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-lg);
+  color: var(--color-foreground);
+  font: 400 14px / 20px var(--font-sans);
+  text-align: left;
+  -webkit-font-smoothing: antialiased;
+}
+
+.umia-widget__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px;
+  cursor: grab;
+  user-select: none;
+}
+
+.umia-widget__title {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.umia-widget__heading {
+  font-weight: 600;
+}
+
+.umia-widget__sub {
+  color: var(--color-muted-foreground);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.umia-widget__card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  background: var(--color-card);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+}
+
+.umia-widget__card[data-gap="12"] {
+  gap: 12px;
+}
+
+.umia-widget__card[data-gap="20"] {
+  gap: 20px;
+}
+
+.umia-widget__lead {
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.umia-widget__code {
+  align-self: flex-start;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--color-tray);
+  color: var(--color-muted-foreground);
+  font: 500 12px / 16px var(--font-mono);
+}
+
+.umia-waiting {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px 6px 10px;
+  border: 1px dashed var(--color-border-strong);
+  border-radius: 999px;
+  color: var(--color-muted-foreground);
+  font-weight: 500;
+}
+
+.umia-waiting__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-brand);
+  animation: umia-breathe 1.6s ease-in-out infinite;
+}
+
+@keyframes umia-breathe {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.umia-stage {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.umia-stage__done {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--color-success);
+  color: var(--color-success-foreground);
+}
+
+.umia-stage__label {
+  flex: 1;
+  min-width: 0;
+  font-weight: 500;
+}
+
+.umia-stage[data-status="pending"] .umia-stage__label {
+  color: var(--color-muted-foreground);
+  font-weight: 400;
+}
+
+.umia-stage__aside {
+  color: var(--color-muted-foreground);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.umia-celebration {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 120px;
+}
+
+.umia-widget__result {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: center;
+}
+
+.umia-widget__display {
+  font: 500 18px / 26px var(--font-display);
+  letter-spacing: -0.27px;
+}
+
+.umia-widget__muted {
+  color: var(--color-muted-foreground);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.umia-widget__footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 24px;
+  color: var(--color-muted-foreground);
+}
+
+.umia-widget__footer > svg {
+  flex-shrink: 0;
+}
+
+.umia-session {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.umia-session__id {
+  overflow: hidden;
+  color: var(--color-foreground);
+  font: 500 12px / 16px var(--font-mono);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.umia-icon-button {
+  display: flex;
+  padding: 6px;
+  margin: -6px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--color-foreground);
+  cursor: pointer;
+}
+
+.umia-icon-button:hover {
+  background: var(--color-hover);
+}

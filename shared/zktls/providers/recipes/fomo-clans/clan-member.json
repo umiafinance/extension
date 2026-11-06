@@ -1,0 +1,114 @@
+{
+  "format": "umia-zktls-candidate-v1",
+  "id": "df553f40-9552-4686-bce1-13118b6989be",
+  "identityProvider": "fomo",
+  "version": "1.0.0",
+  "providerConfigs": [
+    {
+      "loginUrl": "https://fomo.family/",
+      "requestData": [
+        {
+          "url": "https://prod-api.fomo.family/v2/users/current",
+          "method": "GET",
+          "urlType": "TEMPLATE",
+          "bodySniff": {
+            "enabled": false,
+            "template": ""
+          },
+          "responseMatches": [
+            {
+              "type": "contains",
+              "value": "\"responseObject\":{\"id\":\"{{fomo_user}}\",\"address\":\""
+            }
+          ],
+          "responseVariables": ["fomo_user"],
+          "responseRedactions": [
+            {
+              "hash": "oprf-raw",
+              "regex": "\"responseObject\":\\{\"id\":\"(?<fomo_user>[0-9a-f-]{36})\",\"address\":\""
+            }
+          ]
+        },
+        {
+          "url": "https://prod-api.fomo.family/v2/users/{{URL_PARAM_1_SECRET}}-{{URL_PARAM_2_SECRET}}-{{URL_PARAM_3_SECRET}}-{{URL_PARAM_4_SECRET}}-{{URL_PARAM_5_SECRET}}",
+          "method": "GET",
+          "urlType": "TEMPLATE",
+          "bodySniff": {
+            "enabled": false,
+            "template": ""
+          },
+          "responseMatches": [
+            {
+              "type": "contains",
+              "value": "\"responseObject\":{\"id\":\"{{fomo_user}}\",\"address\":\""
+            },
+            {
+              "type": "regex",
+              "value": "\"clan\":\\{\"id\":\"c970bdea-90bc-4e6a-b05f-73e9087daf35\",\"name\":\""
+            }
+          ],
+          "responseVariables": [
+            "fomo_user",
+            "URL_PARAM_1_SECRET",
+            "URL_PARAM_2_SECRET",
+            "URL_PARAM_3_SECRET",
+            "URL_PARAM_4_SECRET",
+            "URL_PARAM_5_SECRET"
+          ],
+          "responseRedactions": [
+            {
+              "hash": "oprf-raw",
+              "regex": "\"responseObject\":\\{\"id\":\"(?<fomo_user>[0-9a-f-]{36})\",\"address\":\""
+            },
+            {
+              "regex": "\"clan\":\\{\"id\":\"c970bdea-90bc-4e6a-b05f-73e9087daf35\",\"name\":\""
+            }
+          ],
+          "writeRedactionMode": "zk"
+        }
+      ]
+    }
+  ],
+  "providerRuntime": {
+    "pageTitle": "fomo",
+    "stepsToFollow": "Sign in to fomo. Your own profile must list the fomo umia test clan (matched by clan ID), and both responses must name the same account.",
+    "requestChain": {
+      "readyUrl": "https://prod-api.fomo.family/v2/users/pin",
+      "responseParameters": [
+        {
+          "requestIndex": 0,
+          "path": ["responseObject", "id"],
+          "parameter": "URL_PARAM_1_SECRET",
+          "slice": [0, 8]
+        },
+        {
+          "requestIndex": 0,
+          "path": ["responseObject", "id"],
+          "parameter": "URL_PARAM_2_SECRET",
+          "slice": [9, 13]
+        },
+        {
+          "requestIndex": 0,
+          "path": ["responseObject", "id"],
+          "parameter": "URL_PARAM_3_SECRET",
+          "slice": [14, 18]
+        },
+        {
+          "requestIndex": 0,
+          "path": ["responseObject", "id"],
+          "parameter": "URL_PARAM_4_SECRET",
+          "slice": [19, 23]
+        },
+        {
+          "requestIndex": 0,
+          "path": ["responseObject", "id"],
+          "parameter": "URL_PARAM_5_SECRET",
+          "slice": [24, 36]
+        }
+      ]
+    }
+  },
+  "providerType": "PUBLIC",
+  "useProxy": false,
+  "source": "local"
+}

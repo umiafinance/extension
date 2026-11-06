@@ -1,0 +1,69 @@
+/* The extension's own tokens, matching the Umia app's light and dark themes. They stay here rather
+   than in the shared design package so the extension and SDK remain self-contained. theme.js sets
+   `data-umia-theme` on the `.umia-theme` element from the app's saved choice, or from the OS when
+   that is "system". Fonts are registered by fonts.js under Umia-prefixed names, so a provider
+   page's own Geist cannot stand in for them. */
+
+.umia-theme {
+  color-scheme: light;
+  --color-shell: #f3f6f4;
+  --color-tray: #f9faf9;
+  --color-card: #ffffff;
+  --color-border: #e3e6e4;
+  --color-border-strong: #d3d5d3;
+  --color-foreground: #242725;
+  --color-muted-foreground: #6d6f6d;
+  --color-primary: #080b09;
+  --color-primary-hover: #1d221f;
+  --color-primary-border: rgb(0 0 0 / 0.08);
+  --color-primary-foreground: #ffffff;
+  --color-outline-border: rgb(0 0 0 / 0.15);
+  --color-hover: rgb(0 0 0 / 0.05);
+  --color-success: #227e45;
+  --color-success-foreground: #ffffff;
+  --color-brand: #33bd68;
+  /* Brand logos are drawn for a light ground, so their circle stays light in both themes. */
+  --color-logo-surface: #ffffff;
+
+  --shadow-sm: 0 2px 6px -1px rgb(11 18 13 / 0.08);
+  --shadow-lg: 0 12px 32px -8px rgb(11 18 13 / 0.2);
+  --shadow-control-inset: inset 0 4px 8px rgb(0 0 0 / 0.05), inset 0 -4px 4px rgb(255 255 255 / 0.1);
+
+  --font-sans: "Umia Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Umia Geist Mono", ui-monospace, monospace;
+  --font-display: "Umia Sora", var(--font-sans);
+
+  --radius-panel: 24px;
+  --radius-card: 20px;
+  --radius-tile: 16px;
+  --radius-control: 9999px;
+
+  --dashed-rule: repeating-linear-gradient(
+    to right,
+    var(--color-border-strong) 0 4px,
+    transparent 4px 8px
+  );
+}
+
+.umia-theme[data-umia-theme="dark"] {
+  color-scheme: dark;
+  --color-shell: #09090b;
+  --color-tray: #2a2a2f;
+  --color-card: #1f1f24;
+  --color-border: rgb(255 255 255 / 0.1);
+  --color-border-strong: rgb(250 250 250 / 0.22);
+  --color-foreground: #fafafa;
+  --color-muted-foreground: #a1a1aa;
+  --color-primary: #fafafa;
+  --color-primary-hover: #e4e4e7;
+  --color-primary-border: transparent;
+  --color-primary-foreground: #09090b;
+  --color-outline-border: rgb(255 255 255 / 0.15);
+  --color-hover: rgb(255 255 255 / 0.08);
+  --color-success: #33bd68;
+  --color-success-foreground: #09090b;
+
+  --shadow-sm: 0 0 0 1px rgb(255 255 255 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+  --shadow-control-inset: none;
+}

@@ -1,0 +1,33 @@
+{
+  "name": "umia-extension-build",
+  "private": true,
+  "workspaces": [
+    "web/extension",
+    "shared/zktls/extension-sdk",
+    "shared/zktls/config"
+  ],
+  "packageManager": "bun@1.4.4",
+  "catalog": {
+    "typescript": "^5.9.3",
+    "vitest": "^3.0.5"
+  },
+  "overrides": {
+    "re2": "1.24.0",
+    "body-parser": "1.20.9",
+    "fast-uri": "3.1.9",
+    "follow-redirects": "1.16.2",
+    "proxy-addr": "2.0.8",
+    "ws@^8": "8.21.1",
+    "express": {
+      "path-to-regexp": "0.1.13"
+    }
+  },
+  "trustedDependencies": [
+    "@parcel/watcher",
+    "cbor-extract",
+    "core-js-pure",
+    "esbuild",
+    "koffi",
+    "re2"
+  ]
+}

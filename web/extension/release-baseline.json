@@ -1,0 +1,26 @@
+{
+  "permissions": ["cookies", "offscreen", "scripting", "storage"],
+  "optionalPermissions": [],
+  "hostPermissions": [],
+  "optionalHostPermissions": ["http://localhost/*", "https://*/*"],
+  "contentScriptMatches": [],
+  "contentScriptFlags": [],
+  "externallyConnectableMatches": [],
+  "externallyConnectableIds": [],
+  "webAccessibleResources": [
+    "reclaim-browser-extension-sdk/content/components/reclaim-provider-verification-popup.css",
+    "reclaim-browser-extension-sdk/fonts/Geist-Variable.woff2",
+    "reclaim-browser-extension-sdk/fonts/GeistMono-Variable.woff2",
+    "reclaim-browser-extension-sdk/fonts/Sora-Variable.woff2",
+    "reclaim-browser-extension-sdk/interceptor/network-interceptor.bundle.js"
+  ],
+  "webAccessibleResourceMatches": ["http://localhost/*", "https://*/*"],
+  "webAccessibleResourceDynamicUrls": [],
+  "extensionPagesCsp": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'; worker-src 'self';",
+  "sandboxCsp": null,
+  "sdk": {
+    "name": "@umia/zktls-extension-sdk",
+    "version": "0.5.2",
+    "attestorVersion": "5.1.5"
+  }
+}

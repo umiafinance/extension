@@ -1,0 +1,61 @@
+{
+  "format": "umia-zktls-candidate-v1",
+  "id": "8959e0d6-d5d3-48ab-af2a-44891bb9a2e8",
+  "version": "4.0.0",
+  "identityProvider": "echo",
+  "providerConfigs": [
+    {
+      "loginUrl": "https://app.echo.xyz/portfolio",
+      "requestData": [
+        {
+          "url": "https://app.echo.xyz/portfolio/{{URL_PARAM_1_SECRET}}-{{URL_PARAM_2_SECRET}}-{{URL_PARAM_3_SECRET}}-{{URL_PARAM_4_SECRET}}-{{URL_PARAM_5_SECRET}}/current",
+          "urlType": "TEMPLATE",
+          "method": "GET",
+          "responseMatches": [
+            {
+              "value": ">Contributions</div><div class=\"text-gray-900 text-5xl font-semibold\">\\$[1-9][0-9,]*<",
+              "type": "regex",
+              "invert": false
+            },
+            {
+              "value": "EmailAddress\\\":\\\"{{echouser}}\\\"",
+              "type": "contains",
+              "invert": false
+            }
+          ],
+          "responseRedactions": [
+            {
+              "regex": ">Contributions</div><div class=\"text-gray-900 text-5xl font-semibold\">\\$[1-9][0-9,]*<"
+            },
+            {
+              "regex": "EmailAddress\\\\\":\\\\\"(?<echouser>[^\\\\\"]+)\\\\\"",
+              "hash": "oprf-raw"
+            }
+          ],
+          "bodySniff": {
+            "enabled": false,
+            "template": ""
+          },
+          "responseVariables": [
+            "echouser",
+            "URL_PARAM_1_SECRET",
+            "URL_PARAM_2_SECRET",
+            "URL_PARAM_3_SECRET",
+            "URL_PARAM_4_SECRET",
+            "URL_PARAM_5_SECRET"
+          ],
+          "credentials": null,
+          "writeRedactionMode": "zk"
+        }
+      ],
+      "allowedInjectedRequestData": []
+    }
+  ],
+  "providerRuntime": {
+    "pageTitle": "Portfolio \u2014 Echo",
+    "stepsToFollow": "Sign in to Echo and open your portfolio. Verification checks that total contributions exceed $0 and uses an OPRF-protected account email. All five portfolio UUID groups are private."
+  },
+  "providerType": "PUBLIC",
+  "useProxy": false,
+  "source": "local"
+}

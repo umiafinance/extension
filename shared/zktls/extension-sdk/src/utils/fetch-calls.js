@@ -6,7 +6,6 @@ import { failureCode } from "./constants/interfaces.js";
 import {
   approvedBackendUrl,
   requireLiveSession,
-  requirePinnedVersion,
   requireSessionToken,
 } from "./session-config.js";
 
@@ -48,8 +47,8 @@ async function backendJson(response) {
 const SHA256_DIGEST = /^sha256:[0-9a-f]{64}$/;
 
 // The compatibility response carries the reviewed login URL only inside its one
-// versioned config, which `recipeDigest` covers.
-function versionedLoginUrl(provider) {
+// config, which `recipeDigest` covers.
+function pinnedLoginUrl(provider) {
   const configs = provider.providerConfigs;
   const url = Array.isArray(configs) && configs.length === 1 ? configs[0]?.loginUrl : undefined;
   if (!isServableLoginUrl(url)) throw new Error("Provider login URL unavailable");
@@ -57,30 +56,19 @@ function versionedLoginUrl(provider) {
 }
 
 export const fetchProviderData = async (providerId, session) => {
-  const versionNumber = requirePinnedVersion(session?.umia?.providerVersion);
   const { backendUrl, headers } = sessionHeaders(session);
-  const response = await backendFetch(
-    API_ENDPOINTS.PROVIDER_URL(providerId, backendUrl, versionNumber),
-    {
-      redirect: "error",
-      headers,
-    },
-  );
+  const response = await backendFetch(API_ENDPOINTS.PROVIDER_URL(providerId, backendUrl), {
+    redirect: "error",
+    headers,
+  });
   if (!response.ok) {
     throw new Error("PROVIDER_UNAVAILABLE");
   }
-  const data = await backendJson(response);
+  const provider = (await backendJson(response))?.providers;
   if (
-    !data?.providers ||
-    typeof data.providers.versionNumber !== "string" ||
-    data.providers.versionNumber !== versionNumber
-  ) {
-    throw new Error("Provider response version does not match session pin");
-  }
-  const provider = data.providers;
-  if (
+    !provider ||
+    typeof provider !== "object" ||
     provider.id !== providerId ||
-    provider.version !== versionNumber ||
     typeof provider.recipeDigest !== "string" ||
     !SHA256_DIGEST.test(provider.recipeDigest) ||
     Object.hasOwn(provider, "loginUrl") ||
@@ -91,7 +79,7 @@ export const fetchProviderData = async (providerId, session) => {
   }
   // Fail before any tab opens rather than at claim time, after login.
   pinnedGeoLocation(provider.geoLocation);
-  return { provider, loginUrl: versionedLoginUrl(provider) };
+  return { provider, loginUrl: pinnedLoginUrl(provider) };
 };
 
 // A failure status carries the same finite code the page receives.
@@ -164,7 +152,6 @@ export const submitBoundProofs = async (proofs, session) => {
     const body = await backendJson(accepted);
     if (
       body?.session?.statusV2 !== "PROOF_SUBMITTED" ||
-      body.session.providerVersionString !== session.umia.providerVersion ||
       !Array.isArray(body.session.proofs) ||
       body.session.proofs.length < 1 ||
       body.session.proofs.length > 64

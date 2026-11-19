@@ -31,7 +31,7 @@ session cookie.
 
 - Request 2 alone proves nothing about the viewer. The verifier accepts the pair only when both
   captures are equal, which forces the profile to be the signed-in account's own.
-- Changing the allowlisted clan requires a new recipe version; an unlisted clan ID or `clan: null`
+- Changing the allowlisted clan requires a new recipe saved under a new provider id; an unlisted clan ID or `clan: null`
   never satisfies `clan-member.json`.
 
 ## Request trigger

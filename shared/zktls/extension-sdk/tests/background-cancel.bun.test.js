@@ -23,7 +23,6 @@ function bound(id) {
     sessionId: id,
     route,
     umia: {
-      providerVersion: "v1",
       sessionToken: "a".repeat(64),
       expiresAt: new Date((now + 600) * 1000).toISOString(),
       attestorAuth: {

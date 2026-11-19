@@ -9,7 +9,7 @@ import {
 const listeners = new Map();
 const sent = [];
 const page = {
-  location: { protocol: "https:", href: "https://hub.umia.conductor:8443/auction/1" },
+  location: { protocol: "https:", href: "https://hub.umia.localhost/auction/1" },
   addEventListener(type, listener) {
     listeners.set(type, [...(listeners.get(type) ?? []), listener]);
   },

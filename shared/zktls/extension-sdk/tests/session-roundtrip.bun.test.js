@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "bun:test";
 import { zktlsEndpointProfile } from "@umia/zktls-config/self-host";
 
-const devnet = zktlsEndpointProfile("cloud-devnet");
+const devnet = zktlsEndpointProfile("native-devnet");
 
 globalThis.__SDK_VERSION__ = "0.5.2";
 globalThis.window = {
@@ -35,7 +35,6 @@ test("bound umia survives the real SDK config, template, Chrome and offscreen co
     backendUrl: devnet.backendUrl,
     attestorUrl: devnet.attestorUrl,
     witness: `0x${"a".repeat(40)}`,
-    providerVersion: "v7",
     sessionToken: "a".repeat(64),
     attestorAuth: {
       data: {
@@ -58,7 +57,6 @@ test("bound umia survives the real SDK config, template, Chrome and offscreen co
   const config = {
     sessionId: "session-one",
     providerId: "provider-one",
-    providerVersion: "v7",
     applicationId: "app-one",
     signature: "signed-init",
     parameters: { account: "demo" },
@@ -102,9 +100,8 @@ test("bound umia survives the real SDK config, template, Chrome and offscreen co
     }),
   );
   const offscreen = takeOffscreenSession(offscreenCopy);
-  const { providerVersion, sessionToken, attestorAuth, expiresAt } = umia;
+  const { sessionToken, attestorAuth, expiresAt } = umia;
   assert.deepEqual(offscreen.session.umia, {
-    providerVersion,
     sessionToken,
     attestorAuth,
     expiresAt,
@@ -113,7 +110,7 @@ test("bound umia survives the real SDK config, template, Chrome and offscreen co
   assert.equal(offscreen.claim.session, undefined);
   assert.equal(offscreen.claim.client.url, umia.attestorUrl);
   assert.equal(JSON.stringify(offscreen.claim).includes(umia.sessionToken), false);
-  assert.equal(requireLiveSession(offscreen.session).route.profile, "cloud-devnet");
+  assert.equal(requireLiveSession(offscreen.session).route.profile, "native-devnet");
 
   instance._emit("completed", []);
   await verification;
@@ -122,18 +119,22 @@ test("bound umia survives the real SDK config, template, Chrome and offscreen co
 
 test("raw init cannot promote an unbound response into a bearer session", async () => {
   const original = ReclaimExtensionProofRequest.prototype._initSession;
-  ReclaimExtensionProofRequest.prototype._initSession = async () => ({
-    sessionId: "raw-session",
-    resolvedProviderVersion: "v7",
-    umia: { sessionToken: "unexpected-private-data" },
-  });
+  let initPayload;
+  ReclaimExtensionProofRequest.prototype._initSession = async (payload) => {
+    initPayload = payload;
+    return {
+      sessionId: "raw-session",
+      umia: { sessionToken: "unexpected-private-data" },
+    };
+  };
   try {
     const request = await ReclaimExtensionProofRequest.init(
       "app-one",
       `0x${"1".repeat(64)}`,
       "provider-one",
-      { extensionID: "test-extension", providerVersion: "v7" },
+      { extensionID: "test-extension" },
     );
+    assert.deepEqual(Object.keys(initPayload), ["providerId", "appId", "timestamp", "signature"]);
     assert.equal(request.sessionId, "raw-session");
     assert.equal(request.umia, null);
     await assert.rejects(request.startVerification(), /Bound session configuration is required/);

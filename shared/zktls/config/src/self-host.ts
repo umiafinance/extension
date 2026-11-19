@@ -36,7 +36,6 @@ export type ZktlsProofTarget =
       kind: "platform_credential";
       chainId: number;
       domain: string;
-      predicateId: string;
     };
 
 /** The `umia` block inside the SDK's signed request; top-level sessionId is authoritative. */
@@ -44,7 +43,6 @@ export interface ZktlsSessionConfig {
   backendUrl: string;
   attestorUrl: string;
   witness: `0x${string}`;
-  providerVersion: string;
   sessionToken: string;
   attestorAuth: ZktlsAttestorAuth;
   expiresAt: string;
@@ -90,7 +88,6 @@ export interface ZktlsChainNetwork {
 /** Registry snapshots keep every SDK-derivable claim hash separate from source drift. */
 export interface ZktlsRegistryProvider {
   id: string;
-  version: string;
   identityProvider: string;
   providerConfigs: Record<string, unknown>[];
   providerRuntime: Record<string, unknown>;
@@ -317,7 +314,7 @@ export interface ZktlsTelemetryBatch {
 export interface ZktlsSessionEventsResponse {
   status: ZktlsSessionStatus;
   code?: ZktlsErrorCode;
-  provider: { id: string; version: string };
+  provider: { id: string };
   attemptId?: string;
   createdAt: string;
   updatedAt: string;
@@ -371,13 +368,6 @@ export function zktlsClaimChainIds(): number[] {
  * Literal rows keep the list tree-shakeable; every consumer checks attestorUrl is the shared one. */
 export const ZKTLS_EXTENSION_ORIGIN_ALLOWLIST = [
   {
-    profile: "cloud-devnet",
-    environment: "devnet",
-    callerOrigin: "https://hub.umia.conductor:8443",
-    backendUrl: "https://api.umia.conductor:8443/zktls",
-    attestorUrl: "wss://attestor.zktls.umia.finance/ws",
-  },
-  {
     profile: "native-devnet",
     environment: "devnet",
     callerOrigin: "https://hub.umia.localhost",
@@ -396,13 +386,6 @@ export const ZKTLS_EXTENSION_ORIGIN_ALLOWLIST = [
     environment: "testnet",
     callerOrigin: "https://app.testnet.umia.finance",
     backendUrl: "https://api.testnet.umia.finance/zktls",
-    attestorUrl: "wss://attestor.zktls.umia.finance/ws",
-  },
-  {
-    profile: "cloud-testnet",
-    environment: "testnet",
-    callerOrigin: "https://hub.umia.conductor:8443",
-    backendUrl: "https://api.umia.conductor:8443/zktls",
     attestorUrl: "wss://attestor.zktls.umia.finance/ws",
   },
   {
@@ -434,47 +417,4 @@ export function zktlsEndpointProfile<P extends ZktlsEndpointProfileName>(
  */
 export function isAttestableExtractionKey(name: unknown): name is string {
   return typeof name === "string" && /^[a-z][a-z0-9_]{0,63}$/.test(name);
-}
-
-/** A Reclaim release a local recipe may derive from; prereleases never derive. */
-export const ZKTLS_UPSTREAM_RELEASE_VERSION = /^\d+\.\d+\.\d+$/;
-
-/**
- * A local recipe derived from the exact Reclaim version `x.y.z` is saved as `x.y.z-umia.N`,
- * N a canonical 1..999999, so `-umia.01` never aliases `-umia.1`. Literals, not `new RegExp`, so
- * bundles that do not use them drop them; its base group is ZKTLS_UPSTREAM_RELEASE_VERSION.
- */
-export const ZKTLS_LOCAL_RECIPE_VERSION = /^(\d+\.\d+\.\d+)-umia\.([1-9]\d{0,5})$/;
-
-/** The derivation revision N when `version` derives from `fromVersion`, else null. */
-export function zktlsLocalRecipeRevision(version: string, fromVersion: string): number | null {
-  const match = ZKTLS_LOCAL_RECIPE_VERSION.exec(version);
-  return match && match[1] === fromVersion ? Number(match[2]) : null;
-}
-
-/** One saved registry row, as far as pin resolution needs it. */
-export interface ZktlsRegistryPin {
-  id: string;
-  version: string;
-  source: "reclaim" | "local";
-}
-
-/**
- * The saved version a canonical pin runs: the exact pin, else its newest local derivation
- * (`<pin>-umia.N`, same claim hashes). Null when neither is saved; never another base.
- */
-export function resolveZktlsRegistryPin(
-  saved: readonly ZktlsRegistryPin[],
-  pin: { id: string; version: string },
-): string | null {
-  if (saved.some((p) => p.id === pin.id && p.version === pin.version)) return pin.version;
-  let best: { version: string; revision: number } | null = null;
-  for (const p of saved) {
-    if (p.id !== pin.id || p.source !== "local") continue;
-    const revision = zktlsLocalRecipeRevision(p.version, pin.version);
-    if (revision !== null && (!best || revision > best.revision)) {
-      best = { version: p.version, revision };
-    }
-  }
-  return best?.version ?? null;
 }

@@ -2,7 +2,6 @@
   "format": "umia-zktls-candidate-v1",
   "id": "187cdd0b-8390-4992-9287-d4af821e20aa",
   "identityProvider": "github",
-  "version": "1.0.0",
   "providerConfigs": [
     {
       "loginUrl": "https://github.com/pulls/search?q=is%3Apr%20reviewed-by%3A%40me%20repo%3AelizaOS%2Feliza%20created%3A2026-07-01..2026-09-30",

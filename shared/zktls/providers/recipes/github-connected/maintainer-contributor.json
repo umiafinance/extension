@@ -2,7 +2,6 @@
   "format": "umia-zktls-candidate-v1",
   "id": "ee097ff2-040d-4787-9b41-28e3b1d70341",
   "identityProvider": "github",
-  "version": "1.0.0",
   "providerConfigs": [
     {
       "loginUrl": "https://github.com/pulls/search?q=is%3Apr%20is%3Amerged%20author%3A%40me%20repo%3Aumiafinance%2Fumia",

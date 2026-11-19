@@ -11,6 +11,12 @@ const INSTALL_MANIFEST_FIELDS = ["key", "update_url"];
 // Chrome writes this into an installed copy (its own content hashes); it is not part of a release.
 const INSTALL_ONLY = /^_metadata\//;
 
+// The Chrome Web Store re-encodes the manifest icons, so they must exist but are not compared.
+function storeReencoded(releaseDir) {
+  const { icons = {} } = JSON.parse(readFileSync(join(releaseDir, "manifest.json"), "utf8"));
+  return new Set(Object.values(icons));
+}
+
 function listFiles(root, dir = root) {
   return readdirSync(dir).flatMap((name) => {
     const path = join(dir, name);
@@ -42,11 +48,13 @@ function comparableManifest(bytes) {
 export function verifyInstall(installedDir, releaseDir) {
   const problems = [];
   const installed = new Set(listFiles(installedDir).filter((path) => !INSTALL_ONLY.test(path)));
+  const reencoded = storeReencoded(releaseDir);
   for (const path of listFiles(releaseDir)) {
     if (!installed.delete(path)) {
       problems.push(`missing: ${path}`);
       continue;
     }
+    if (reencoded.has(path)) continue;
     const released = readFileSync(join(releaseDir, path));
     const actual = readFileSync(join(installedDir, path));
     const same =

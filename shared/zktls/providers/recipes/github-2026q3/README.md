@@ -1,6 +1,6 @@
 # GitHub contributor, reviewer and maintainer recipes
 
-GitHub provider versions in the `github` namespace. Each is one request to a GitHub
+GitHub providers in the `github` namespace. Each is one request to a GitHub
 search page, made with the signed-in session:
 
 | Kind | Files | Proves |
@@ -9,7 +9,6 @@ search page, made with the signed-in session:
 | Reviewer | `reviewer.json`, `*-reviewer.json` | at least 5 pull requests reviewed by `@me` in the named repo or org, created in the same window |
 | Outside contributor | `outside-contributor.json` | at least 5 pull requests authored by `@me`, merged into public repos not owned by `@me`, merged 2025-10-01 to 2026-09-30 |
 | Maintainer (50+ stars) | `maintainer-50-stars-before-2026-09-30.json` | at least one public repository owned by `@me`, with 50 or more stars, created before September 30, 2026 |
-| Historical maintainer (50+ stars) | `maintainer.json` (1.0.0), `maintainer-50-stars-actor-id-v1.0.1.json` | no creation-date restriction; retained as immutable historical recipes |
 | Maintainer (3+ stars) | `maintainer-3-stars-oprf-raw.json` | at least one public repository owned by `@me` with 3 or more stars; no creation-date restriction |
 
 ## What is revealed
@@ -25,8 +24,8 @@ search page, made with the signed-in session:
 - Every recipe uses the same capture field and hash mode, so one GitHub account has one identity
   across all of them.
 - `@me` resolves to the session's account, so the result can only describe the signed-in user.
-- Each file is an independent, immutable version; it requires only that the `github` namespace
-  exists.
+- Each file is an independent, immutable provider with its own id; it requires only that the
+  `github` namespace exists.
 
 ## 50-star creation cutoff
 

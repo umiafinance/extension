@@ -10,7 +10,7 @@ its listed clans.
 
 "All listed" is a fixed allowlist, not every clan on Fomo. Clan names are display copy;
 eligibility uses exact clan IDs, so a rename does not affect it. Changing either allowlist
-requires a new recipe version.
+requires a new recipe saved under a new provider id.
 
 | Clan | In `recommended.json` | Clan ID |
 | --- | --- | --- |

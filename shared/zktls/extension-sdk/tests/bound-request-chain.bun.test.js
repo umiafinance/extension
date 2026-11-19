@@ -18,7 +18,6 @@ function fixture() {
   const session = {
     sessionId: "bound-one",
     umia: {
-      providerVersion: "v7",
       sessionToken: "private-bearer",
       expiresAt: new Date((now + 600) * 1000).toISOString(),
       attestorAuth: {
@@ -31,8 +30,6 @@ function fixture() {
   };
   const providerData = {
     id: "approved-provider",
-    version: "v7",
-    versionNumber: "v7",
     providerConfigs: [{ loginUrl: `${origin}/` }],
     requestChain: structuredClone(recipe.providerRuntime.requestChain),
     requestData: structuredClone(recipe.providerConfigs[0].requestData),

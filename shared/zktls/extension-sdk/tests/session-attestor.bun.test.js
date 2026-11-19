@@ -25,7 +25,6 @@ function bound(id, marker = "a") {
     sessionId: id,
     route,
     umia: {
-      providerVersion: "v1",
       sessionToken: marker.repeat(64),
       expiresAt: new Date((second + 600) * 1000).toISOString(),
       attestorAuth: {

@@ -28,6 +28,9 @@ test("provider grants are exact hosts and the Umia app cannot fold in a wildcard
       assert.equal(findOptionalPatternForUrl(url), pattern);
     }
     assert.equal(findOptionalPatternForUrl("ftp://github.com/"), null);
+    for (const url of ["https://*.fly.io/login", "https://%2a.fly.io/login", "https://*/login"]) {
+      assert.equal(findOptionalPatternForUrl(url), null);
+    }
     for (const [pattern, folded] of [
       ["https://github.com/*", "https://github.com:443/*"],
       ["https://developers.google.com:443/*", "https://developers.google.com:443/*"],

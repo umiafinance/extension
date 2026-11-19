@@ -147,7 +147,7 @@ test("a ZIP with missing, extra, altered or duplicated entries fails the artifac
 
 test("built caller origins must equal the attested endpoint profiles", () => {
   const build = syntheticBuild();
-  const profiles = [{ profile: "cloud-devnet", callerOrigin: "https://hub.umia.example:8443" }];
+  const profiles = [{ profile: "example-devnet", callerOrigin: "https://hub.umia.example:8443" }];
   const manifest = JSON.parse(readFileSync(join(build.distDir, "manifest.json"), "utf8"));
   manifest.externally_connectable = { matches: ["https://hub.umia.example:8443/*"] };
   build.put("manifest.json", JSON.stringify(manifest));

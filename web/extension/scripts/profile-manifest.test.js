@@ -9,8 +9,8 @@ const template = {
   externally_connectable: { matches: [] },
 };
 
-const cloud = {
-  profile: "cloud-devnet",
+const example = {
+  profile: "example-devnet",
   callerOrigin: "https://hub.umia.example:8443",
 };
 const native = {
@@ -20,11 +20,11 @@ const native = {
 
 test("one build emits only approved canonical caller patterns", () => {
   const output = manifestForProfiles(template, [
-    cloud,
+    example,
     native,
     {
-      ...cloud,
-      profile: "cloud-testnet",
+      ...example,
+      profile: "example-testnet",
     },
   ]);
   assert.deepEqual(output.externally_connectable.matches, [
@@ -43,7 +43,7 @@ test("rejects broad source permissions and ambiguous caller URLs", () => {
           ...template,
           externally_connectable: { matches: ["https://*.umia.finance/*"] },
         },
-        [cloud],
+        [example],
       ),
     /trust union/,
   );
@@ -55,7 +55,7 @@ test("rejects broad source permissions and ambiguous caller URLs", () => {
     "https://user@hub.umia.example:8443",
   ]) {
     assert.throws(
-      () => manifestForProfiles(template, [{ ...cloud, callerOrigin }]),
+      () => manifestForProfiles(template, [{ ...example, callerOrigin }]),
       /canonical HTTPS/,
     );
   }

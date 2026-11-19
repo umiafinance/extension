@@ -14,8 +14,6 @@ function startRequest(profile: Profile, attestor: Trust["attestor"], sessionId: 
   return {
     sessionId,
     providerId: "synthetic-provider",
-    providerVersion: "v7",
-    resolvedProviderVersion: "v7",
     applicationId: "synthetic-app",
     signature: "synthetic-public-signature",
     timestamp: String(Date.now()),
@@ -31,7 +29,6 @@ function startRequest(profile: Profile, attestor: Trust["attestor"], sessionId: 
         expectedEpoch: attestor.claimEpoch,
         authorityDigest: `sha256:${"e".repeat(64)}`,
       },
-      providerVersion: "v7",
       sessionToken: "a".repeat(64),
       attestorAuth: {
         data: {
@@ -61,7 +58,6 @@ test("the dev build starts sessions from every canonical Umia app on the shared 
   expect(trust.eligibleCallerOrigins).toEqual(
     expect.arrayContaining([
       "https://hub.umia.localhost",
-      "https://hub.umia.conductor:8443",
       "https://app.devnet.umia.finance",
       "https://app.umia.finance",
     ]),

@@ -7,7 +7,8 @@ export function isZktlsPathSegment(value: unknown): value is string {
 
 /**
  * The provider login URL the extension will open: absolute HTTPS exactly as written, with no
- * surrounding whitespace, userinfo or backslash. The publisher refuses any recipe it would reject.
+ * surrounding whitespace, userinfo, backslash or wildcard host. The publisher refuses any recipe
+ * it would reject.
  */
 export function isServableLoginUrl(value: unknown): value is string {
   if (typeof value !== "string" || !value.startsWith("https://") || value.trim() !== value) {
@@ -15,7 +16,7 @@ export function isServableLoginUrl(value: unknown): value is string {
   }
   try {
     const url = new URL(value);
-    return !value.includes("\\") && !url.username && !url.password;
+    return !value.includes("\\") && !url.username && !url.password && !url.hostname.includes("*");
   } catch {
     return false;
   }

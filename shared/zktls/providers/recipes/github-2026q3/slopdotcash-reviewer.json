@@ -2,7 +2,6 @@
   "format": "umia-zktls-candidate-v1",
   "id": "d267bf6a-8095-4e5b-8d49-715395b711b5",
   "identityProvider": "github",
-  "version": "1.0.0",
   "providerConfigs": [
     {
       "loginUrl": "https://github.com/pulls/search?q=is%3Apr%20reviewed-by%3A%40me%20org%3ASlopDotCash%20created%3A2026-07-01..2026-09-30",

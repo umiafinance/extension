@@ -38,7 +38,7 @@ workspace `bun.lock` is the install lock.
 
 ### Build changes
 
-`package.json` and `webpack-build-utils/build.js` differ from upstream only in build metadata:
+`package.json` and `webpack-build-utils/build.js` differ from upstream in build metadata and targets:
 
 - The workspace name, `private: true` and `author: "Umia"`; npm publishing metadata, unused
   scripts and unused dependencies are removed.
@@ -50,6 +50,12 @@ workspace `bun.lock` is the install lock.
   install does not hoist a transitive copy.
 - The build exits nonzero when webpack stats contain errors; upstream returned success with
   missing bundles.
+- `node webpack-build-utils/build.js --sdk-only` builds only the public ESM entry for Hub.
+  The default retains all extension targets; both modes clean `build/` first. The Hub launcher
+  uses Node directly and checks for a freshly emitted bundle. Rebuild the full SDK before
+  packaging the extension. Ineffective array-level mode/ZIP options were removed.
+- Webpack progress is interactive-only. Build summaries keep errors, warnings and timings
+  without dumping the complete asset/module listing.
 
 Webpack uses natural module and chunk IDs, and `webpack-build-utils/stable-import-meta-url.js`
 replaces attestor-core's inlined absolute `import.meta.url` with a package-relative path, so two
@@ -90,7 +96,7 @@ bundles and `snarkjs.min.js` always come from the local build, never the mirror.
 (extension ID, top frame, tab, document, exact caller origin), selects the endpoint profile from
 `ZKTLS_EXTENSION_ORIGIN_ALLOWLIST` by caller origin, backend and environment, and checks the
 devnet chain, the shared attestor's signer and claim epoch (`ZKTLS_SHARED_ATTESTOR`), expiry, the
-signed attestor auth (which must end before the session) and the pinned provider version, all
+signed attestor auth (which must end before the session) and the provider id, all
 before fetching provider data or opening a tab. A rejected start reaches the caller only as
 `CONFIG_REJECTED`, `SESSION_EXPIRED` or `UNSUPPORTED_NETWORK`. The background then carries one
 frozen bound session `{ sessionId, umia, route }`: the route alone holds destinations and the

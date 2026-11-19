@@ -11,7 +11,6 @@ function session() {
   return {
     sessionId: "synthetic-session",
     umia: {
-      providerVersion: "v1",
       sessionToken: "a".repeat(64),
       expiresAt: new Date((now + 600) * 1000).toISOString(),
       attestorAuth: {
@@ -19,7 +18,7 @@ function session() {
       },
     },
     route: {
-      backendUrl: "https://api.umia.conductor:8443/zktls",
+      backendUrl: "https://api.umia.localhost/zktls",
       network: { environment: "devnet", chainId: 10143 },
     },
   };
@@ -40,14 +39,14 @@ test("sends the whole synthetic array only to fixed bearer intake and returns ac
     return calls.length === 1
       ? jsonResponse({ status: "success" })
       : jsonResponse({
-          session: { statusV2: "PROOF_SUBMITTED", providerVersionString: "v1", proofs: accepted },
+          session: { statusV2: "PROOF_SUBMITTED", proofs: accepted },
         });
   };
 
   expect(await submitBoundProofs(proofs, session())).toEqual(accepted);
   expect(calls).toHaveLength(2);
   expect(calls[0].url).toBe(
-    "https://api.umia.conductor:8443/zktls/session/synthetic-session/proof",
+    "https://api.umia.localhost/zktls/session/synthetic-session/proof",
   );
   expect(calls[0].options).toMatchObject({
     method: "POST",
@@ -57,7 +56,7 @@ test("sends the whole synthetic array only to fixed bearer intake and returns ac
   expect(calls[0].options.headers.Authorization).toBe(`Bearer ${"a".repeat(64)}`);
   expect(calls[0].options.headers["Content-Type"]).toBe("text/plain");
   expect(calls[1].url).toBe(
-    "https://api.umia.conductor:8443/zktls/api/sdk/session/synthetic-session",
+    "https://api.umia.localhost/zktls/api/sdk/session/synthetic-session",
   );
   expect(calls[1].options.redirect).toBe("error");
   expect(calls[1].options.headers.Authorization).toBe(`Bearer ${"a".repeat(64)}`);
@@ -89,21 +88,19 @@ test("reports an unreachable intake or poll as BACKEND_UNREACHABLE", async () =>
   }
 });
 
-test("rejects an unaccepted or mismatched poll without returning private payloads", async () => {
-  const privatePayload = "synthetic-private-proof";
-  for (const status of ["USER_STARTED_VERIFICATION", "PROOF_SUBMITTED"]) {
+test("rejects an unaccepted or malformed poll without returning private payloads", async () => {
+  const privatePayload = { synthetic: "synthetic-private-proof" };
+  for (const polled of [
+    { statusV2: "USER_STARTED_VERIFICATION", proofs: [privatePayload] },
+    { statusV2: "PROOF_SUBMITTED", proofs: [] },
+    { statusV2: "PROOF_SUBMITTED", proofs: privatePayload },
+  ]) {
     let calls = 0;
     globalThis.fetch = async () => {
       calls += 1;
       return calls === 1
         ? jsonResponse({ status: "success" })
-        : jsonResponse({
-            session: {
-              statusV2: status,
-              providerVersionString: status === "PROOF_SUBMITTED" ? "wrong" : "v1",
-              proofs: [{ synthetic: privatePayload }],
-            },
-          });
+        : jsonResponse({ session: polled });
     };
     await expect(submitBoundProofs([{ synthetic: true }], session())).rejects.toThrow(
       "VERIFICATION_FAILED",
@@ -137,7 +134,7 @@ test("accepts only the canonical bearer status success response", async () => {
   expect(await updateSessionStatus(session(), "PROOF_GENERATION_STARTED")).toEqual({
     status: "success",
   });
-  expect(calls[1].url).toBe("https://api.umia.conductor:8443/zktls/api/sdk/update/session/");
+  expect(calls[1].url).toBe("https://api.umia.localhost/zktls/api/sdk/update/session/");
   expect(calls[1].options).toMatchObject({ method: "POST", redirect: "error" });
   expect(JSON.parse(calls[1].options.body)).toEqual({
     sessionId: "synthetic-session",

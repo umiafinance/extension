@@ -2,7 +2,6 @@
   "format": "umia-zktls-candidate-v1",
   "id": "72d15c20-c9bc-4f45-9b5c-0efcf41c7263",
   "identityProvider": "github",
-  "version": "1.0.0",
   "providerConfigs": [
     {
       "loginUrl": "https://github.com/pulls/search?q=is%3Apr%20reviewed-by%3A%40me%20repo%3Aumiafinance%2Fumia%20created%3A2026-07-01..2026-09-30",

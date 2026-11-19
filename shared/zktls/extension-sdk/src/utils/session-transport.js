@@ -22,10 +22,10 @@ export function freezeSessionRoute(route) {
 
 // Destinations and network live only on the route; the bound umia keeps session credentials.
 export function freezeBoundSession({ sessionId, umia, route }) {
-  const { providerVersion, sessionToken, attestorAuth, expiresAt } = umia;
+  const { sessionToken, attestorAuth, expiresAt } = umia;
   return Object.freeze({
     sessionId,
-    umia: freezeUmia({ providerVersion, sessionToken, attestorAuth, expiresAt }),
+    umia: freezeUmia({ sessionToken, attestorAuth, expiresAt }),
     route: freezeSessionRoute(route),
   });
 }
@@ -43,8 +43,6 @@ export function verificationTemplate(request) {
     redirectUrl: request.redirectUrl || "",
     acceptAiProviders: !!request.acceptAiProviders,
     sdkVersion: request.sdkVersion,
-    providerVersion: request.providerVersion || "",
-    resolvedProviderVersion: request.resolvedProviderVersion || "",
     jsonProofResponse: !!request.jsonProofResponse,
     umia: copyUmia(request.umia),
   };

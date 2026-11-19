@@ -2,7 +2,6 @@
   "format": "umia-zktls-candidate-v1",
   "id": "f02893ad-d7ff-4415-b966-2b67e020ed54",
   "identityProvider": "fomo",
-  "version": "1.0.0",
   "providerConfigs": [
     {
       "loginUrl": "https://fomo.family/",

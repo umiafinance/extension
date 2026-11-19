@@ -43,8 +43,6 @@ function fixture() {
   return {
     sessionId: "session-one",
     providerId: "provider-one",
-    providerVersion: "v7",
-    resolvedProviderVersion: "v7",
     applicationId: "app-one",
     signature: "public-signature",
     timestamp: String(Date.now()),
@@ -53,7 +51,6 @@ function fixture() {
       backendUrl: approved.backendUrl,
       attestorUrl: approved.attestorUrl,
       witness,
-      providerVersion: "v7",
       sessionToken: "a".repeat(64),
       attestorAuth: {
         data: {
@@ -101,7 +98,7 @@ function route(profile = approved, network = selectedNetwork) {
   };
 }
 
-const CREDENTIAL_KEYS = ["providerVersion", "sessionToken", "attestorAuth", "expiresAt"];
+const CREDENTIAL_KEYS = ["sessionToken", "attestorAuth", "expiresAt"];
 
 function bound({ sessionId = "session-one", umia = fixture().umia, sessionRoute = route() } = {}) {
   return freezeBoundSession({ sessionId, umia, route: sessionRoute });
@@ -180,17 +177,6 @@ describe("bound SDK session routing", () => {
         r.umia.expiresAt = "2000-01-01T00:00:00.000Z";
       },
       (r) => {
-        r.umia.providerVersion = "latest";
-      },
-      (r) => {
-        r.umia.providerVersion = "latest";
-        r.providerVersion = "latest";
-        r.resolvedProviderVersion = "latest";
-      },
-      (r) => {
-        r.resolvedProviderVersion = "v8";
-      },
-      (r) => {
         r.umia.sessionId = "other";
       },
     ]) {
@@ -244,24 +230,24 @@ describe("bound SDK session routing", () => {
     assert.deepEqual(validate(), fixture().umia);
     assert.equal(validateCaller(sender, approved.profile).profile, approved.profile);
     for (const url of [
-      "https://admin.umia.conductor:8443/auction/1",
-      "https://hub.umia.conductor/auction/1",
-      "https://hub.umia.conductor.evil:8443/auction/1",
-      "https://hub.umia.conductor:8444/auction/1",
-      "http://hub.umia.conductor:8443/auction/1",
-      "https://user@hub.umia.conductor:8443/auction/1",
-      "https://hub.umia.conductor:8443/%2e%2e/auction/1",
+      "https://admin.umia.localhost/auction/1",
+      "https://hub.umia.localhost:8443/auction/1",
+      "https://hub.umia.localhost.evil/auction/1",
+      "https://hub.umia.localhost:444/auction/1",
+      "http://hub.umia.localhost/auction/1",
+      "https://user@hub.umia.localhost/auction/1",
+      "https://hub.umia.localhost/%2e%2e/auction/1",
     ])
       assert.throws(() => validate(fixture(), { url, permissionsGranted: true }));
     for (const backendUrl of [
-      "https://api.umia.conductor/zktls",
-      "https://api.umia.conductor:8443/zktls-evil",
-      "https://api.umia.conductor:8443/zktls/",
-      "https://admin.umia.conductor:8443/zktls",
-      "https://api.umia.conductor:8443/zktls/../zktls",
-      "https://api.umia.conductor:8443/zktls?token=x",
-      "https://api.umia.conductor:8443/zktls#x",
-      "https://user@api.umia.conductor:8443/zktls",
+      "https://api.umia.localhost:8443/zktls",
+      "https://api.umia.localhost/zktls-evil",
+      "https://api.umia.localhost/zktls/",
+      "https://admin.umia.localhost/zktls",
+      "https://api.umia.localhost/zktls/../zktls",
+      "https://api.umia.localhost/zktls?token=x",
+      "https://api.umia.localhost/zktls#x",
+      "https://user@api.umia.localhost/zktls",
     ]) {
       const request = fixture();
       request.umia.backendUrl = backendUrl;
@@ -335,9 +321,7 @@ describe("bound SDK session routing", () => {
   });
 
   it("starts each session on the caller's profile for its network and the shared attestor", async () => {
-    const testnetProfile = ZKTLS_EXTENSION_ORIGIN_ALLOWLIST.find(
-      (p) => p.profile === "cloud-testnet",
-    );
+    const testnetProfile = { ...approved, profile: "native-testnet", environment: "testnet" };
     const start = (request, from = sender) =>
       authorizeStart(request, from, [approved, testnetProfile], attestor());
     const first = fixture();
@@ -357,7 +341,7 @@ describe("bound SDK session routing", () => {
     assert.equal((await start(second)).route.profile, testnetProfile.profile);
     const network = second.umia.network;
     for (const [changed, message] of [
-      [{ backendUrl: "https://api.umia.conductor:8443/zktls-evil" }, /not provisioned/],
+      [{ backendUrl: `${approved.backendUrl}-evil` }, /not provisioned/],
       [{ network: { ...network, environment: "mainnet" } }, /not provisioned/],
       [{ attestorUrl: "wss://attestor.example/ws" }, /Unapproved attestor URL/],
       [{ witness: `0x${"f".repeat(40)}` }, /authority mismatch/],
@@ -366,7 +350,7 @@ describe("bound SDK session routing", () => {
     ]) {
       await assert.rejects(start({ ...second, umia: { ...second.umia, ...changed } }), message);
     }
-    const admin = "https://admin.umia.conductor:8443";
+    const admin = "https://admin.umia.localhost";
     await assert.rejects(
       start(first, { ...sender, url: `${admin}/auction/1`, origin: admin, permissionsGranted: true }),
       /Caller is not approved/,
@@ -404,15 +388,13 @@ describe("bound SDK session routing", () => {
 function pinnedProvider() {
   return {
     id: "provider-one",
-    version: "v7",
-    versionNumber: "v7",
     recipeDigest: `sha256:${"a".repeat(64)}`,
     providerConfigs: [{ loginUrl: "https://provider.example/login" }],
   };
 }
 
 describe("backend and consumer transport", () => {
-  it("returns the single versioned login URL with the pinned provider", async () => {
+  it("returns the single login URL with the pinned provider", async () => {
     const original = globalThis.fetch;
     let served;
     globalThis.fetch = async () => ({ ok: true, json: async () => ({ providers: served }) });
@@ -424,7 +406,6 @@ describe("backend and consumer transport", () => {
       });
       for (const change of [
         (p) => (p.id = "other-provider"),
-        (p) => (p.version = "v8"),
         (p) => (p.recipeDigest = "invalid"),
         (p) => delete p.recipeDigest,
         (p) => (p.loginUrl = "https://provider.example/login"),
@@ -460,18 +441,12 @@ describe("backend and consumer transport", () => {
     }
   });
 
-  it("rejects missing and mismatched provider response pins", async () => {
+  it("rejects a response without a provider object", async () => {
     const original = globalThis.fetch;
     try {
-      for (const versionNumber of [undefined, null, "latest", "v8", 7]) {
-        globalThis.fetch = async () => ({
-          ok: true,
-          json: async () => ({ providers: { versionNumber } }),
-        });
-        await assert.rejects(
-          fetchProviderData("provider-one", bound()),
-          /does not match session pin/,
-        );
+      for (const body of [{}, null, { providers: null }, { providers: "provider-one" }]) {
+        globalThis.fetch = async () => ({ ok: true, json: async () => body });
+        await assert.rejects(fetchProviderData("provider-one", bound()), /metadata rejected/);
       }
     } finally {
       globalThis.fetch = original;
@@ -497,10 +472,7 @@ describe("backend and consumer transport", () => {
       const session = bound({ umia });
       await fetchProviderData("provider-one", session);
       await updateSessionStatus(session, "PROOF_GENERATION_STARTED");
-      assert.equal(
-        calls[0].url,
-        `${approved.backendUrl}/api/providers/provider-one?versionNumber=v7`,
-      );
+      assert.equal(calls[0].url, `${approved.backendUrl}/api/providers/provider-one`);
       assert.equal(calls[1].url, `${approved.backendUrl}/api/sdk/update/session/`);
       assert.equal(calls[0].options.headers.Authorization, `Bearer ${umia.sessionToken}`);
       assert.equal(calls[1].options.headers.Authorization, `Bearer ${umia.sessionToken}`);
@@ -512,17 +484,13 @@ describe("backend and consumer transport", () => {
       });
       assert.equal(calls.length, 2);
       const forged = bound({
-        sessionRoute: { ...route(), backendUrl: "https://api.umia.conductor.evil:8443/zktls" },
+        sessionRoute: { ...route(), backendUrl: "https://api.umia.localhost.evil/zktls" },
       });
       await assert.rejects(
         fetchProviderData("provider-one", forged),
         /Unapproved backend destination/,
       );
       assert.equal(calls.length, 2);
-      await assert.rejects(
-        fetchProviderData("provider-one", bound({ umia: { ...umia, providerVersion: "latest" } })),
-        /Exact provider version/,
-      );
       await assert.rejects(fetchProviderData("..", session), /Invalid backend path segment/);
       await assert.rejects(
         fetchProviderData("provider-one", bound({ sessionId: "other-session" })),

@@ -1,7 +1,6 @@
 {
   "format": "umia-zktls-candidate-v1",
   "id": "8959e0d6-d5d3-48ab-af2a-44891bb9a2e8",
-  "version": "4.0.0",
   "identityProvider": "echo",
   "providerConfigs": [
     {

@@ -11,27 +11,29 @@ installed is that build, and rebuild it yourself.
 ## Check your installed extension
 
 Needs [`gh`](https://cli.github.com) and Node 22 or later. Set `tag` to the version shown in
-`chrome://extensions`.
+`chrome://extensions`, and `profile` to the Profile Path shown in `chrome://version`.
 
 ```bash
 tag=v0.5.1
-git clone https://github.com/umiafinance/extension && cd extension && git checkout "$tag"
+profile="$HOME/Library/Application Support/Google/Chrome/Default"
+git clone https://github.com/umiafinance/extension && cd extension
 gh release download "$tag" -D release && gh release verify "$tag"
 (cd release && shasum -a 256 -c SHA256SUMS && unzip -q "umia-extension-$tag.zip" -d unzipped)
 node web/extension/scripts/verify-install.js \
-  "$HOME/Library/Application Support/Google/Chrome/Default/Extensions/ejcaahfcaaiblipldkfijdcbannidbdd/${tag#v}_0" \
-  release/unzipped
+  "$profile/Extensions/ejcaahfcaaiblipldkfijdcbannidbdd/${tag#v}_0" release/unzipped
 ```
 
-On Linux the Chrome profile is `~/.config/google-chrome/Default`; on Windows,
-`%LOCALAPPDATA%\Google\Chrome\User Data\Default`. Every file must match byte for byte, except the
-`key` and `update_url` manifest fields and the `_metadata/` folder, which Chrome adds on install.
+Every file must match byte for byte, except the `key` and `update_url` manifest fields and the
+`_metadata/` folder, which Chrome adds on install, and the manifest icons, which the Web Store
+re-encodes. If macOS refuses to read the profile (`EPERM`), copy the extension folder out with
+Finder and check the copy.
 
 ## Rebuild from source
 
 In the same checkout, with [Bun](https://bun.sh) at the version in `package.json` (`packageManager`):
 
 ```bash
+git checkout "$tag"
 ./build.sh
 node web/extension/scripts/compare-artifacts.js \
   web/extension/dist/artifact-manifest.json release/artifact-manifest.json

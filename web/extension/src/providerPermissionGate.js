@@ -116,7 +116,7 @@ export function findOptionalPatternForUrl(url) {
   } catch {
     return null;
   }
-  if (!isWithinOptionalScope(scheme, host)) return null;
+  if (host.includes("*") || !isWithinOptionalScope(scheme, host)) return null;
   if (scheme !== "https") return `${scheme}://${host}/*`;
   return `https://${host}:${port || "443"}/*`;
 }

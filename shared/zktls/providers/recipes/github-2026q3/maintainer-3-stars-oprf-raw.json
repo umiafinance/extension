@@ -2,7 +2,6 @@
   "format": "umia-zktls-candidate-v1",
   "id": "d3d62969-bfff-4f63-bb41-fbaaa8699d8d",
   "identityProvider": "github",
-  "version": "1.0.0",
   "providerConfigs": [
     {
       "loginUrl": "https://github.com/search?q=user%3A%40me%20stars%3A%3E%3D3%20is%3Apublic&type=repositories",

@@ -3,34 +3,32 @@ process.env.BABEL_ENV = "production";
 process.env.NODE_ENV = "production";
 process.env.ASSET_PATH = "/";
 
-console.log("Building for production...");
-console.log("NODE_ENV:", process.env.NODE_ENV);
-console.log("BABEL_ENV:", process.env.BABEL_ENV);
-
 var webpack = require("webpack"),
   path = require("path"),
   fs = require("fs"),
-  config = require("../webpack.config"),
-  ZipPlugin = require("zip-webpack-plugin");
+  configs = require("../webpack.config");
+
+// Hub needs only the public ESM entry, not the content/offscreen workers or MV2 bundles.
+// Keep the same entry and compiler options so the SDK's runtime behavior stays identical.
+const sdkOnly = process.argv.includes("--sdk-only");
+const esmConfig = configs.find((config) => config.name === "background-esm-mv3");
+const config = sdkOnly
+  ? {
+      ...esmConfig,
+      name: "page-sdk",
+      entry: { ReclaimExtensionSDK: esmConfig.entry.ReclaimExtensionSDK },
+    }
+  : configs;
+
+console.log(`Building ${sdkOnly ? "page SDK" : "extension SDK"} for production...`);
 
 fs.rmSync(path.resolve(__dirname, "../build"), { recursive: true, force: true });
 
-delete config.chromeExtensionBoilerplate;
-
-config.mode = "production";
-
-var packageInfo = JSON.parse(fs.readFileSync("package.json", "utf-8"));
-
-config.plugins = (config.plugins || []).concat(
-  new ZipPlugin({
-    filename: `${packageInfo.name}-${packageInfo.version}.zip`,
-    path: path.join(__dirname, "../", "zip"),
-  }),
-);
-
 webpack(config, function (err, stats) {
   if (stats) {
-    console.log(stats.toString({ colors: true }));
+    console.log(
+      stats.toString({ preset: "errors-warnings", timings: true, colors: !!process.stdout.isTTY }),
+    );
   }
   if (err) throw err;
   if (stats?.hasErrors()) process.exitCode = 1;

@@ -78,3 +78,17 @@ test("a manifest Chrome rewrote with keys in another order still matches", () =>
     rmSync(installed, { recursive: true, force: true });
   }
 });
+
+test("the store's re-encoded icons are not compared but must be installed", () => {
+  const manifest = JSON.stringify({ name: "Umia", icons: { 16: "icons/icon-16.png" } });
+  const release = tree({ "manifest.json": manifest, "icons/icon-16.png": "release png" });
+  const installed = tree({ "manifest.json": manifest, "icons/icon-16.png": "store png" });
+  try {
+    assert.deepEqual(verifyInstall(installed, release), []);
+    rmSync(join(installed, "icons/icon-16.png"));
+    assert.deepEqual(verifyInstall(installed, release), ["missing: icons/icon-16.png"]);
+  } finally {
+    rmSync(release, { recursive: true, force: true });
+    rmSync(installed, { recursive: true, force: true });
+  }
+});

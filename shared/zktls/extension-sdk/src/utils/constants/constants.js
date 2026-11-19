@@ -6,9 +6,8 @@ function safePathSegment(value) {
 }
 
 export const API_ENDPOINTS = {
-  PROVIDER_URL: (providerId, backendUrl, versionNumber) =>
-    `${backendUrl}/api/providers/${safePathSegment(providerId)}` +
-    `?versionNumber=${encodeURIComponent(versionNumber)}`,
+  PROVIDER_URL: (providerId, backendUrl) =>
+    `${backendUrl}/api/providers/${safePathSegment(providerId)}`,
   UPDATE_SESSION_STATUS: (backendUrl) => `${backendUrl}/api/sdk/update/session/`,
   TELEMETRY: (backendUrl) => `${backendUrl}/api/sdk/telemetry`,
   STATUS_URL: (sessionId, backendUrl) =>

@@ -147,17 +147,6 @@ function matchingProfile(selectedProfile, profiles) {
   return profile;
 }
 
-export function requirePinnedVersion(value) {
-  if (
-    typeof value !== "string" ||
-    !/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(value) ||
-    value.toLowerCase() === "latest"
-  ) {
-    throw new Error("Exact provider version is required");
-  }
-  return value;
-}
-
 export function requireSessionToken(value) {
   if (typeof value !== "string" || !SESSION_TOKEN.test(value)) {
     throw new Error("Invalid session token");
@@ -308,13 +297,6 @@ export function validateSessionConfig(request, sender, profile, attestor = ZKTLS
   }
   exactUrl(umia.backendUrl, profile.backendUrl, "backend");
   exactUrl(umia.attestorUrl, attestor.url, "attestor");
-  requirePinnedVersion(umia.providerVersion);
-  if (
-    (request.providerVersion && request.providerVersion !== umia.providerVersion) ||
-    (request.resolvedProviderVersion && request.resolvedProviderVersion !== umia.providerVersion)
-  ) {
-    throw new Error("Provider version mismatch");
-  }
   requireSessionToken(umia.sessionToken);
   const expiresAt = Date.parse(umia.expiresAt);
   if (

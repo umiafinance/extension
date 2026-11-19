@@ -134,7 +134,8 @@ const commonOptimization = {
 };
 
 const commonPlugins = [
-  new webpack.ProgressPlugin(),
+  // Progress is useful interactively, but emits hundreds of lines per compiler in CI.
+  ...(process.stderr.isTTY && !process.env.CI ? [new webpack.ProgressPlugin()] : []),
   new webpack.EnvironmentPlugin(["NODE_ENV"]),
   new webpack.DefinePlugin({
     "process.env.NODE_ENV": JSON.stringify(env.NODE_ENV),

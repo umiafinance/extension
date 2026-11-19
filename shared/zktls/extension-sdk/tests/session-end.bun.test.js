@@ -24,7 +24,6 @@ const session = {
     network: { environment: "devnet", chainId: 10143, authorityDigest: `sha256:${"c".repeat(64)}` },
   },
   umia: {
-    providerVersion: "v1",
     sessionToken: "a".repeat(64),
     expiresAt: new Date((now + 600) * 1000).toISOString(),
     attestorAuth: {

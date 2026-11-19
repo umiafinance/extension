@@ -62,7 +62,6 @@ function fixture({ url = documentUrl, href = url, requestData, interceptor } = {
   const session = {
     sessionId: "bound-one",
     umia: {
-      providerVersion: "v7",
       sessionToken: "private-bearer",
       expiresAt: new Date((now + 600) * 1000).toISOString(),
       attestorAuth: {
@@ -73,7 +72,6 @@ function fixture({ url = documentUrl, href = url, requestData, interceptor } = {
   };
   const providerData = {
     id: "approved-provider",
-    version: "v7",
     requestData: requestData ?? [
       {
         url: documentUrl,

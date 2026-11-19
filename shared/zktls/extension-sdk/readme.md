@@ -102,7 +102,6 @@ import { reclaimExtensionSDK } from "@umia/zktls-extension-sdk";
 // An authenticated Umia API call; the API binds the session to the signed-in user and wallet.
 const { config } = await api.post("/api/v1/hub/zktls/proof-request", {
   providerId,
-  providerVersion,
   walletAddress,
   target,
 });

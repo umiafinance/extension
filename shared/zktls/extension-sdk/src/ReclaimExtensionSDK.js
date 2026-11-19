@@ -47,10 +47,8 @@ class ReclaimExtensionProofRequest {
     this.context = { contextAddress: "0x0", contextMessage: "sample context" };
     this.redirectUrl = "";
     this.sdkVersion = `ext-${SDK_VERSION}`;
-    this.resolvedProviderVersion = "";
     this.jsonProofResponse = false;
     this.extensionID = options.extensionID || "";
-    this.providerVersion = options.providerVersion || "";
     this.acceptAiProviders = !!options.acceptAiProviders;
     this.callbackUrl = options.callbackUrl || "";
     this.umia = null;
@@ -116,10 +114,8 @@ class ReclaimExtensionProofRequest {
       appId: applicationId,
       timestamp: instance.timestamp,
       signature,
-      versionNumber: instance.providerVersion || "",
     });
     instance.sessionId = initRes.sessionId || "";
-    instance.resolvedProviderVersion = initRes.resolvedProviderVersion || "";
     return instance;
   }
 
@@ -143,8 +139,6 @@ class ReclaimExtensionProofRequest {
     instance.context = config.context || instance.context;
     instance.callbackUrl = String(config.appCallbackUrl || config.callbackUrl || "");
     instance.jsonProofResponse = !!(config.jsonProofResponse ?? instance.jsonProofResponse);
-    instance.resolvedProviderVersion = String(config.resolvedProviderVersion || "");
-    instance.providerVersion = String(config.providerVersion || "");
     instance.umia = freezeUmia(config.umia);
     instance.redirectUrl = String(config.redirectUrl || "");
     instance.acceptAiProviders = !!(

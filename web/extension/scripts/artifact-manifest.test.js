@@ -26,7 +26,7 @@ function fixture() {
   const trust = {
     endpointProfiles: [
       {
-        profile: "cloud-devnet",
+        profile: "example-devnet",
         environment: "devnet",
         callerOrigin: "https://hub.umia.example:8443",
       },

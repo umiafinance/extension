@@ -7,7 +7,7 @@ import {
 import { MESSAGE_ACTIONS, MESSAGE_SOURCES } from "../src/utils/constants/interfaces.js";
 import { PROOF_GENERATION_TIMEOUT_MS, ZK_WORKER_POOL_SIZE } from "../src/utils/constants/config.js";
 
-const devnet = zktlsEndpointProfile("cloud-devnet");
+const devnet = zktlsEndpointProfile("native-devnet");
 let listener;
 let complete;
 let pendingClaim;
@@ -83,7 +83,6 @@ function boundMessage(client) {
     session: {
       sessionId: "synthetic-session",
       umia: {
-        providerVersion: "v1",
         sessionToken: "d".repeat(64),
         attestorAuth: {
           data: {

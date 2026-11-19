@@ -26,7 +26,6 @@ function bound(id, lifetimeMs) {
       network: {},
     },
     umia: {
-      providerVersion: "v1",
       sessionToken: "a".repeat(64),
       expiresAt: new Date(now + lifetimeMs).toISOString(),
       attestorAuth: {

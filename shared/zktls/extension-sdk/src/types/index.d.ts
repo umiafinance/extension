@@ -3,7 +3,6 @@ import type { ZktlsSessionConfig } from "@umia/zktls-config/self-host";
 export interface InitOptions {
   extensionID?: string;
   endpointProfile?: string;
-  providerVersion?: string;
   callbackUrl?: string;
 }
 
